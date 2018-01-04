@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: https://dannashen.github.io/
+url: https://dannashen.github.io
 date_format: "ordinal"
 title: 自己的博客
 subtitle: "打码改变人生"
@@ -98,13 +98,13 @@ gitment:
         client_secret: b42a4178e5fd4a7cf63189ef4b1453b05c375709
 # https://github.com/gitalk/gitalk#install
 gitalk:
-    owner: mzlogin
+    owner: Dannashen
     repo: blog-comments
-    clientID: d2e1cbbd298958076462
-    clientSecret: b42a4178e5fd4a7cf63189ef4b1453b05c375709
+    clientID: 74df77db3ff52097e787
+    clientSecret: e4e8f8a29bee05c84643eb9b58e64a3fbb0756d8
 # 在使用其它评论组件时可点击显示 Disqus
 lazy_load_disqus : false
-
+#这里都是配置 需要自己申请以后弄
 # ---------------- #
 #    Analytics     #
 # ---------------- #
