@@ -95,8 +95,8 @@ gitment:
         client_secret: b42a4178e5fd4a7cf63189ef4b1453b05c375709
 # https://github.com/gitalk/gitalk#install
 gitalk:
-    owner: Dannashen
-    repo: blog-comments
+    owner: DannaShen
+    repo: DannaShen.github.io
     clientID: 74df77db3ff52097e787
     clientSecret: e4e8f8a29bee05c84643eb9b58e64a3fbb0756d8
 # 在使用其它评论组件时可点击显示 Disqus
