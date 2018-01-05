@@ -77,7 +77,7 @@ collections:
         output: true
         permalink: /wiki/:path/
 
-repository: mzlogin/mzlogin.github.io
+repository: DannaShen/DannaShen.github.io
 
 # ---------------- #
 #      Comments    #
@@ -88,11 +88,11 @@ disqus:
     username: 
 # https://imsun.net/posts/gitment-introduction/
 gitment:
-    owner: mzlogin
-    repo: blog-comments
+    owner: DannaShen
+    repo: DannaShen.github.io
     oauth:
-        client_id: d2e1cbbd298958076462
-        client_secret: b42a4178e5fd4a7cf63189ef4b1453b05c375709
+        client_id: ef818097cb6a0e962f62
+        client_secret: 70d67f55d59a82439cd1d0bd8a26d648ca17bd93
 # https://github.com/gitalk/gitalk#install
 gitalk:
     owner: DannaShen
