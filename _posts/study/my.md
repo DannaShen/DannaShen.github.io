@@ -1,7 +1,7 @@
 ---
 layout: post
 title: my phthon
-categories: Study
+categories: StudyJava
 description: 自学 Python 核心编程过程中对课后习题的答案记录。
 keywords: Python
 ---
