@@ -67,3 +67,4 @@ Google的三大核心元素：
 　　3、Mapreduce 算法；它是Google开发的C++编程工具，用于大于1TB数据的大规模数据集并行运算。MapReduce能够找出一个词语在Google搜索目录中 出现的次数；一系列网页中特定词语出现的频率；链接到某个特定网站的所有网站数量等。
 
 好用的东西，总能找到对应的开源实现，这就是Hadoop。
+![](/images/BigData/google-and-hadoop.png)
