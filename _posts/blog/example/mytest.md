@@ -1,7 +1,7 @@
 ---
 layout:post
 title:my test
-categories:Blog
+categories:example
 description: 我的第一个测试
 keywords:测试
 ---

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 不藏拙的人生
-categories: Study
+categories: example
 description: 真傻还是假聪明，这是个问题。
 keywords: 思维, 深度
 ---
