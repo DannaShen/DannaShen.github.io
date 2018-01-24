@@ -6,7 +6,7 @@ description: Hadoop与HBase各自扮演的角色
 keywords: Hadoop, HBase
 ---
 
-hadoop和hbase扮演的角色。
+>hadoop和hbase扮演的角色。
 Hadoop与HBase的前生今世
 
 ## 引子：
