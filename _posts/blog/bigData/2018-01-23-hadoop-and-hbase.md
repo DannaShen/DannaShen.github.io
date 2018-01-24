@@ -141,11 +141,11 @@ HMaster （HA），负责Table和Region的管理工作
 
 RegionServer（x N），主要负责响应用户I/O请求，向HDFS文件系统中读写数据
 
-![](/images/BigData/hbase组件构成.jpg)
+![](/images/BigData/hbase-composition.jpg)
 
 ## HBase中表格的存储：
 一张表存储在[1-N)个HRegion中，每个HRegion保存某张表RowKey连续的一段记录。
-![](/images/BigData/hbse表格存储.jpg)
+![](/images/BigData/hbse-save.jpg)
 
 建表时可以预划分HRegion——提高并行度，进而提升读写速度
 
@@ -159,7 +159,7 @@ HBase中有两张特殊的Table，-ROOT-和.META.
 
 Ø  Zookeeper中记录了-ROOT-表的location
 
-![](/images/BigData/hbase读取图.jpg)
+![](/images/BigData/hbase-read-and-write.jpg)
 
 首先 HBase Client端会连接Zookeeper Qurom
 
