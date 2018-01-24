@@ -1,6 +1,6 @@
 ---
 layout: post
-title:HBase入门
+title: HBase入门
 categories: bigData
 description: HBase入门
 keywords: HBase
