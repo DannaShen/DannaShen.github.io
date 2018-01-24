@@ -8,6 +8,7 @@ keywords: Hadoop, HBase
 
 
 ## 引子：
+
 古代，人们用牛来拉重物。当一头牛拉不动一根圆木时，他们不曾想过培育更大更壮的牛。
 同样：我们也不需要尝试开发超级计算机，而应试着结合使用更多计算机系统。
 
@@ -31,6 +32,7 @@ keywords: Hadoop, HBase
 这就是分布式集群能力的体现，更说明了采用分布式系统的必要性。
 
 ## 正文：
+
 单台设备的性能、资源、可扩展性等限制 —— 分布式系统（Hadoop）
 
 传统关系型数据库在面对海量数据时的乏力 —— 分布式数据库（HBase）
@@ -53,6 +55,7 @@ keywords: Hadoop, HBase
 这就是分表带来的用户体验下降。
 
 ## 什么是Hadoop：
+
 而在原生的分布式系统中，整个集群的节点间共享计算、存储、IO资源，完美的解决了性能、并发、数据存储问题。
 
 看一组关于Google的资料（约在2010年）：
@@ -67,9 +70,11 @@ Google的三大核心元素：
 　　3、Mapreduce 算法；它是Google开发的C++编程工具，用于大于1TB数据的大规模数据集并行运算。MapReduce能够找出一个词语在Google搜索目录中 出现的次数；一系列网页中特定词语出现的频率；链接到某个特定网站的所有网站数量等。
 
 好用的东西，总能找到对应的开源实现，这就是Hadoop。
+
 ![](/images/BigData/google-and-hadoop.png)
 
 ## Hadoop的构成：
+
 ![](/images/BigData/hadoop-ecosystem.png)
 
 其中：
@@ -79,6 +84,7 @@ Pig，可以使用Pig Latin流式编程语言来操作HBase中的数据
 Hive，可以使用类似SQL语言来访问HBase，最终本质是编译成MapReduce Job来处理HBase表数据，适合做数据统计。
 
 ## 谁在用Hadoop：
+
 Amazon、Adobe、Ebay、Facebook、Twitter、Yahoo、IBM……
 
 国内：淘宝和支付宝的数据仓库、华为、百度的搜索日志分析，腾讯……
@@ -88,6 +94,7 @@ Amazon、Adobe、Ebay、Facebook、Twitter、Yahoo、IBM……
 Facebook实时消息存储系统于2010年下半年迁移到了HBase。
 
 ## HBase的前生今世：
+
 2006 年末 —— Google “BigTable: A Distributed Storage System for Structured Data”；
 
 2007 02月 —— HBase的源代码初稿；
@@ -97,6 +104,7 @@ Facebook实时消息存储系统于2010年下半年迁移到了HBase。
 2010 05月 —— HBase从Hadoop子项目升级成Apache顶层项目；
 
 ## 什么是HBase：
+
 HBase是一个在Hadoop上开发的面向列（同类软件还有Cassandra和HyperTable）的分布式数据库。
 
 利用HDFS作为其文件存储系统
@@ -115,12 +123,15 @@ HBase并不是关系型数据库，它不支持SQL，但它能够做RDBMS不能�
 在廉价硬件构成的集群上管理超大规模的稀疏表。
 
 ## HBase的特点：
+
 面向列：列的动态、无限扩展 —— 内容评论的扩展，同类数据集中存储便于压缩
 
 稀疏表：有数据时这个单元格才存在 —— 节省空间
 
 ## HBase表格示意图：
+
 ![](/images/BigData/hbase表格示意图.png)
+
 Ø Row Key: 行键，Table的主键，Table中的记录按照Row Key排序
 
 Ø Timestamp: 时间戳，每次数据操作对应的时间戳，可以看作是数据的version number
@@ -144,7 +155,9 @@ RegionServer（x N），主要负责响应用户I/O请求，向HDFS文件系统�
 ![](/images/BigData/hbase-composition.jpg)
 
 ## HBase中表格的存储：
+
 一张表存储在[1-N)个HRegion中，每个HRegion保存某张表RowKey连续的一段记录。
+
 ![](/images/BigData/hbse-save.jpg)
 
 建表时可以预划分HRegion——提高并行度，进而提升读写速度
