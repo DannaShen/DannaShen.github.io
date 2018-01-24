@@ -10,7 +10,7 @@ hadoop和hbase扮演的角色。
 
 在我人生的前二十几年是没有做年度计划和总结的习惯的，但在 2015-12-31 时和饭团团员们心血来潮一起做了个 2016 PLAN，现在 2016 已经被完整地甩在身后，是时候回顾以明得失，展望以知进退了。
 
-## 引子：
+## 引子
 
 古代，人们用牛来拉重物。当一头牛拉不动一根圆木时，他们不曾想过培育更大更壮的牛。
 同样：我们也不需要尝试开发超级计算机，而应试着结合使用更多计算机系统。
@@ -34,7 +34,7 @@ hadoop和hbase扮演的角色。
 
 这就是分布式集群能力的体现，更说明了采用分布式系统的必要性。
 
-## 正文：
+## 正文
 
 单台设备的性能、资源、可扩展性等限制 —— 分布式系统（Hadoop）
 
@@ -57,7 +57,7 @@ hadoop和hbase扮演的角色。
 
 这就是分表带来的用户体验下降。
 
-## 什么是Hadoop：
+## 什么是Hadoop
 
 而在原生的分布式系统中，整个集群的节点间共享计算、存储、IO资源，完美的解决了性能、并发、数据存储问题。
 
@@ -76,7 +76,7 @@ Google的三大核心元素：
 
 ![](/images/BigData/google-and-hadoop.png)
 
-## Hadoop的构成：
+## Hadoop的构成
 
 ![](/images/BigData/hadoop-ecosystem.png)
 
@@ -86,7 +86,7 @@ Pig，可以使用Pig Latin流式编程语言来操作HBase中的数据
 
 Hive，可以使用类似SQL语言来访问HBase，最终本质是编译成MapReduce Job来处理HBase表数据，适合做数据统计。
 
-## 谁在用Hadoop：
+## 谁在用Hadoop
 
 Amazon、Adobe、Ebay、Facebook、Twitter、Yahoo、IBM……
 
@@ -96,7 +96,7 @@ Amazon、Adobe、Ebay、Facebook、Twitter、Yahoo、IBM……
 
 Facebook实时消息存储系统于2010年下半年迁移到了HBase。
 
-## HBase的前生今世：
+## HBase的前生今世
 
 2006 年末 —— Google “BigTable: A Distributed Storage System for Structured Data”；
 
@@ -106,7 +106,7 @@ Facebook实时消息存储系统于2010年下半年迁移到了HBase。
 
 2010 05月 —— HBase从Hadoop子项目升级成Apache顶层项目；
 
-## 什么是HBase：
+## 什么是HBase
 
 HBase是一个在Hadoop上开发的面向列（同类软件还有Cassandra和HyperTable）的分布式数据库。
 
@@ -125,13 +125,13 @@ HBase并不是关系型数据库，它不支持SQL，但它能够做RDBMS不能�
 
 在廉价硬件构成的集群上管理超大规模的稀疏表。
 
-## HBase的特点：
+## HBase的特点
 
 面向列：列的动态、无限扩展 —— 内容评论的扩展，同类数据集中存储便于压缩
 
 稀疏表：有数据时这个单元格才存在 —— 节省空间
 
-## HBase表格示意图：
+## HBase表格示意图
 
 ![](/images/BigData/hbase表格示意图.png)
 
@@ -157,7 +157,7 @@ RegionServer（x N），主要负责响应用户I/O请求，向HDFS文件系统�
 
 ![](/images/BigData/hbase-composition.jpg)
 
-## HBase中表格的存储：
+## HBase中表格的存储
 
 一张表存储在[1-N)个HRegion中，每个HRegion保存某张表RowKey连续的一段记录。
 
