@@ -7,6 +7,7 @@ keywords: Hadoop, HBase
 ---
 
 hadoop和hbase扮演的角色。
+Hadoop与HBase的前生今世
 
 ## 引子：
 
