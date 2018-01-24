@@ -3,7 +3,7 @@ layout: post
 title: Hadoop与HBase的前生今世
 categories: bigData
 description: Hadoop与HBase各自扮演的角色
-keywords: Hadoop, HBase
+keywords: Hadoop,HBase
 ---
 
  Hadoop与HBase各自扮演的角色
