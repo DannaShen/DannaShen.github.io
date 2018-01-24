@@ -132,7 +132,7 @@ HBase并不是关系型数据库，它不支持SQL，但它能够做RDBMS不能�
 
 ## HBase表格示意图
 
-![](/images/BigData/hbase表格示意图.png)
+![](/images/BigData/hbase-excle.png)
 
 Ø Row Key: 行键，Table的主键，Table中的记录按照Row Key排序
 
