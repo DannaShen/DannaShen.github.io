@@ -38,8 +38,7 @@ HBase有三个主要组成部分：客户端库，主服务器和区域服务器
 	
 ![](/images/BigData/hbase-detail-regionServer.png)
 
-	存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。
-	数据被传送并保存在Hfiles作为块并且memstore刷新。 
+存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。 
 	
 **Zookeeper**	
 
