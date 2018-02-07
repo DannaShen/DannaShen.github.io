@@ -34,6 +34,7 @@ HBase有三个主要组成部分：客户端库，主服务器和区域服务器
 	-由以下的区域大小的阈值决定的区域的大小。
 	
 	需要深入探讨区域服务器：包含区域和存储，如下图所示：
+	
 ![](/images/BigData/hbase-detail-regionServer.png)
 
 	存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。 
