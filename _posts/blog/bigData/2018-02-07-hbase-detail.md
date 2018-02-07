@@ -34,5 +34,15 @@ HBase有三个主要组成部分：客户端库，主服务器和区域服务器
 	
 	需要深入探讨区域服务器：包含区域和存储，如下图所示：
 	![](/images/BigData/hbase-detail-regionServer.png)
-	存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。
+	存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。 
+	
+**4	Zookeeper**	
+
+	-	Zookeeper管理是一个开源项目，提供服务，如维护配置信息，命名，提供分布式同步等
+	-	Zookeeper代表不同区域的服务器短暂节点。主服务器使用这些节点来发现可用的服务器。
+	-	除了可用性，该节点也用于追踪服务器故障或网络分区。
+	-	客户端通过与zookeeper区域服务器进行通信。
+	-	在模拟和独立模式，HBase由zookeeper来管理。
+	
+## Hbase Shell
 	
