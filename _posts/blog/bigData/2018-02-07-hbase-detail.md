@@ -44,5 +44,5 @@ HBase有三个主要组成部分：客户端库，主服务器和区域服务器
 	-	客户端通过与zookeeper区域服务器进行通信。
 	-	在模拟和独立模式，HBase由zookeeper来管理。
 	
-## Hbase Shell
+## Hbase Shell 
 	
