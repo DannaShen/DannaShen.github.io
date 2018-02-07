@@ -34,6 +34,27 @@ keywords: HBase
 ## Hbase的概念与定位
 
 ## Hbase架构体系与设计模型
+![](/images/BigData/hbase-architectrue-system.jpg)
+
+> 表结构模型：
+
+![](/images/BigData/table-format.png)
+可看作为：
+![](/images/BigData/table-example.png)
+举例：
+![](/images/BigData/table-example-data.png)
+
+> 列簇
+
+1. 一张表列簇不会超过5个
+2. 每个列簇中的烈数没有限制
+3. 列只有插入数据后存在
+4. 列在列簇中是有序的
+
+> hbase表与关系型数据库表结构对比
+
+![](/images/BigData/table-compare.png)
+
 
 ## Hbase的安装部署
 
