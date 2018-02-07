@@ -34,9 +34,9 @@ keywords: HBase
 ## Hbase的概念与定位
 
 ## Hbase架构体系与设计模型
-![](/images/BigData/hbase-architectrue-system.jpg)
+![](/images/BigData/hbase-architectrue-system.png)
 
-> 表结构模型：
+> 表结构模型并举例说明：
 
 ![](/images/BigData/table-format.png)
 可看作为：
