@@ -119,7 +119,8 @@ HBase是用Java编写的，因此它提供Java API和HBase通信。 Java API是�
 
 HBaseAdmin是一个类表示管理。这个类属于org.apache.hadoop.hbase.client包。使用这个类，可以执行管理员任务。使用Connection.getAdmin()方法来获取管理员的实例。
 
-#####方法及说明
+**方法及说明**
+	
 	1. void createTable(HTableDescriptor desc) 
 		创建一个新的表
 	2. void createTable(HTableDescriptor desc, byte[][] splitKeys)
@@ -132,11 +133,11 @@ HBaseAdmin是一个类表示管理。这个类属于org.apache.hadoop.hbase.clie
 		删除表
    
 #### Descriptor类
-#####构造函数	
+**构造函数**	
 						
 	HTableDescriptor(TableName name)
 	构造一个表描述符指定TableName对象。
-#####方法及说明
+**方法及说明**
 
 	HTableDescriptor addFamily(HColumnDescriptor family)
 	将列家族给定的描述符
@@ -148,10 +149,11 @@ HBaseAdmin是一个类表示管理。这个类属于org.apache.hadoop.hbase.clie
 	
 #### 示例
 下面给出的是一个表名为emp的样本模式。它有两个列族：“personal data”和“professional data”。
+
 |   Row key      | personal data    | professional data |
 |----------------|--------------|----------------------|
-|      |  |            |
-|   |  |  |
+|      			| 				 |            |
+|   			| 			 | 					 |
 
 在HBase shell创建该表如下所示。
 
@@ -176,12 +178,12 @@ HBaseAdmin是一个类表示管理。这个类属于org.apache.hadoop.hbase.clie
 #### 使用Java API创建一个表
 可以使用HBaseAdmin类的createTable()方法创建表在HBase中。这个类属于org.apache.hadoop.hbase.client 包。下面给出的步骤是来使用Java API创建表在HBase中。
 
-#####第1步：实例化HBaseAdmin
+**第1步：实例化HBaseAdmin**
 这个类需要配置对象作为参数，因此初始实例配置类传递此实例给HBaseAdmin。
 	
 	Configuration conf = HBaseConfiguration.create();
 	HBaseAdmin admin = new HBaseAdmin(conf);
-#####第2步：创建TableDescriptor
+**第2步：创建TableDescriptor**
 HTableDescriptor类是属于org.apache.hadoop.hbase。这个类就像表名和列族的容器一样。
 	
 	//creating table descriptor
@@ -190,7 +192,7 @@ HTableDescriptor类是属于org.apache.hadoop.hbase。这个类就像表名和�
 	HColumnDescriptor family = new HColumnDescriptor(toBytes("column 	family"));
 	//adding coloumn family to HTable
 	table.addFamily(family);
-#####第3步：通过执行管理
+**第3步：通过执行管理**
 使用HBaseAdmin类的createTable()方法，可以在管理模式执行创建的表。
 	
 	admin.createTable(table);
