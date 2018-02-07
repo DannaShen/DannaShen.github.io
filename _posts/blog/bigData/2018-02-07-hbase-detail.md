@@ -12,16 +12,17 @@ keywords: HBase
 
 注意：术语“store”是用于区域来解释存储结构。
 
+
 ![](/images/BigData/hbase-detail-architecture.png)
 
 HBase有三个主要组成部分：客户端库，主服务器和区域服务器。区域服务器可以按要求添加或删除。
 
 **1 主服务器**
 
-    -	分配区域给区域服务器并在Apache ZooKeeper的帮助下完成这个任务。
-	-	处理跨区域的服务器区域的负载均衡。它卸载繁忙的服务器和转移区域较少占用的服务器。
-	-	通过判定负载均衡以维护集群的状态。
-	-	负责模式变化和其他元数据操作，如创建表和列。
+	-分配区域给区域服务器并在Apache ZooKeeper的帮助下完成这个任务。
+	-处理跨区域的服务器区域的负载均衡。它卸载繁忙的服务器和转移区域较少占用的服务器。
+	-通过判定负载均衡以维护集群的状态。
+	-负责模式变化和其他元数据操作，如创建表和列。
 
 **区域**	
 
@@ -37,7 +38,7 @@ HBase有三个主要组成部分：客户端库，主服务器和区域服务器
 	
 ![](/images/BigData/hbase-detail-regionServer.png)
 
-	存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。 
+存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。 
 	
 **Zookeeper**	
 
