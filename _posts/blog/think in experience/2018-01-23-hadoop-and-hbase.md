@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Hadoop与HBase的前生今世
-categories: [历经之路]
+categories: [think in experience]
 description: Hadoop与HBase各自扮演的角色
 keywords: Hadoop,HBase
 ---
