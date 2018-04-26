@@ -23,11 +23,12 @@ Spring从两个角度来实现自动化装配：
 
 **创建CompactDisc接口：**
 
-<code>
+、、、
+
 		public interface CompactDisc {
 			  void play();
 		}
-</code>
+、、、
 
 **实现CompactDisc接口：**
 
