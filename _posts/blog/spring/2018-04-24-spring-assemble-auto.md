@@ -23,7 +23,7 @@ Spring从两个角度来实现自动化装配：
 
 **创建CompactDisc接口：**
 
-```
+``` java
 public interface CompactDisc {
 	  void play();
 }
@@ -31,6 +31,7 @@ public interface CompactDisc {
 
 **实现CompactDisc接口：**
 
+``` java
 	@Component
 	public class SgtPeppers implements CompactDisc {
 	
@@ -42,8 +43,8 @@ public interface CompactDisc {
 	  }
 	 
 	}
-	
-在SgtPeppers类上使用了 **@Component注解，这个注解表明该类会作为组件类**，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
+```	
+在SgtPeppers类上使用了 <u>@Component注解，这个注解表明该类会作为组件类</u>，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
 不过组件扫描默认是不开启的。我们需要显示配置一下Spring，从而命令Spring去寻找带有 @Component注解的类，并创建bean。
 
 **显示配置Spring包括Java和XML两种方式**
