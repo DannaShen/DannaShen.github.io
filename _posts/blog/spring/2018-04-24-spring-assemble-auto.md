@@ -24,9 +24,9 @@ Spring从两个角度来实现自动化装配：
 **创建CompactDisc接口：**
 
 ```
-	public interface CompactDisc {
-		  void play();
-	}
+public interface CompactDisc {
+	  void play();
+}
 ```
 
 **实现CompactDisc接口：**
