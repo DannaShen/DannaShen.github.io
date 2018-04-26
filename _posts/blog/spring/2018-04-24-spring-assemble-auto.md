@@ -23,9 +23,11 @@ Spring从两个角度来实现自动化装配：
 
 **创建CompactDisc接口：**
 
-	public interface CompactDisc {
-	  void play();
-	}
+<code>
+		public interface CompactDisc {
+			  void play();
+		}
+</code>
 
 **实现CompactDisc接口：**
 
@@ -40,6 +42,7 @@ Spring从两个角度来实现自动化装配：
 	  }
 	 
 	}
+	
 在SgtPeppers类上使用了 **@Component注解，这个注解表明该类会作为组件类**，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
 不过组件扫描默认是不开启的。我们需要显示配置一下Spring，从而命令Spring去寻找带有 @Component注解的类，并创建bean。
 
