@@ -6,14 +6,14 @@ description: spring之自动装配bean
 keywords: spring,自动装配
 ---
 
-Spring从两个角度来实现自动化装配：
-	组件扫描：Spring会自动发现应用上下文中所创建的bean。
-	自动装配：Spring自动满足bean之间的依赖。
+> Spring从两个角度来实现自动化装配：
+>	组件扫描：Spring会自动发现应用上下文中所创建的bean。
+>	自动装配：Spring自动满足bean之间的依赖。
 	
 自动装配bean的过程:
-	一、把需要被扫描的类，添加 @Component注解，使它能够被Spring自动发现。
-二、通过显示的设置Java代码 @ComponentScan注解或XML配置，让Spring开启组件扫描，并将扫描的结果类创建bean。
-三、@Autowried注解能实现bean的自动装配，实现依赖注入
+1. 把需要被扫描的类，添加 @Component注解，使它能够被Spring自动发现。
+2. 通过显示的设置Java代码 @ComponentScan注解或XML配置，让Spring开启组件扫描，并将扫描的结果类创建bean。
+3. @Autowried注解能实现bean的自动装配，实现依赖注入
 	
 案例：音响系统的组件。
 
