@@ -9,9 +9,10 @@ keywords: spring,自动装配
 > Spring从两个角度来实现自动化装配：
 >1. 组件扫描：Spring会自动发现应用上下文中所创建的bean。
 >2. 自动装配：Spring自动满足bean之间的依赖。
-
-
-
+>
+>
+>
+>
 
 自动装配bean的过程:
 1. 把需要被扫描的类，添加 @Component注解，使它能够被Spring自动发现。
