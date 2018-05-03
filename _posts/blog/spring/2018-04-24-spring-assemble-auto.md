@@ -40,26 +40,26 @@ keywords: spring,自动装配
 
 ``` java
 
-	public interface CompactDisc {
-		  void cdInfo();
-	}
+public interface CompactDisc {
+	  void cdInfo();
+}
 ```
 
 #### 实现CompactDisc接口：
 
 ``` java
 
-	@Component
-	public class SgtPeppers implements CompactDisc {
-	
-	    private String title="K歌之王";
-	    private String artist="陈奕迅";
-	    @Override
-	    public void cdInfo() {
-	        System.out.print("This CD's title:"+title+";artist:"+artist);
-	    }
-	 
-	}
+@Component
+public class SgtPeppers implements CompactDisc {
+
+    private String title="K歌之王";
+    private String artist="陈奕迅";
+    @Override
+    public void cdInfo() {
+        System.out.print("This CD's title:"+title+";artist:"+artist);
+    }
+ 
+}
 ```	
 &emsp;&emsp;在SgtPeppers类上使用了 <u>@Component注解，这个注解表明该类会作为组件类</u>，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
 不过组件扫描默认是不开启的。我们需要显示配置一下Spring，从而命令Spring去寻找带有 @Component注解的类，并创建bean。
@@ -70,9 +70,9 @@ keywords: spring,自动装配
 
 ``` java
 
-	public interface MediaPlayer {
-	    void play();
-	}
+public interface MediaPlayer {
+    void play();
+}
 ```	
 
 #### 启用组件扫描包括Java和XML两种方式
@@ -82,17 +82,17 @@ keywords: spring,自动装配
 1. 通过Java启用组件扫描
 ``` java
 
-	@Configuration
-	@ComponentScan
-	public class CDPlayerConfig {
-	}
+@Configuration
+@ComponentScan
+public class CDPlayerConfig {
+}
 ```	
-	注意，类CDPlayerConfig通过Java代码定义了Spring的装配规则，但是可以看出并没有显示地声明任何bean，只不过它使用了*@ComponentScan注解，这个注解能够在Spring中启用组件扫描。（@Configuration注解表明这个类是一个配置类）*如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包以及这个包下的所有子包，查找所有带有 @Component注解的类。这样的话，SgtPeppers类就会被自动创建一个bean。
+&emsp;&emsp;注意，类CDPlayerConfig通过Java代码定义了Spring的装配规则，但是可以看出并没有显示地声明任何bean，只不过它使用了<u>@ComponentScan注解，这个注解能够在Spring中启用组件扫描。（@Configuration注解表明这个类是一个配置类）</u>如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包以及这个包下的所有子包，查找所有带有 @Component注解的类。这样的话，SgtPeppers类就会被自动创建一个bean。
 Spring之所以存在是因为解耦和，即不用传统方法来new一个新的实例，因此在实现类中使用@Component标明，即可达到效果
 2. 通过XML启用组件扫描
 ``` java
 
-	<context:component-scan base-package="..." />
+<context:component-scan base-package="..." />
 ```	
 &nbsp;
 &nbsp;
