@@ -28,7 +28,7 @@ keywords: spring,自动装配
 ``` java
 
 	public interface CompactDisc {
-		  void play();
+		  void cdInfo();
 	}
 ```
 
@@ -39,17 +39,25 @@ keywords: spring,自动装配
 	@Component
 	public class SgtPeppers implements CompactDisc {
 	
-	  private String title = "Sgt. Pepper's Lonely Hearts Club Band";  
-	  private String artist = "The Beatles";
-	  
-	  public void play() {
-	    System.out.println("Playing " + title + " by " + artist);
-	  }
+	    private String title="K歌之王";
+	    private String artist="陈奕迅";
+	    @Override
+	    public void cdInfo() {
+	        System.out.print("This CD's title:"+title+";artist:"+artist);
+	    }
 	 
 	}
 ```	
 在SgtPeppers类上使用了 <u>@Component注解，这个注解表明该类会作为组件类</u>，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
 不过组件扫描默认是不开启的。我们需要显示配置一下Spring，从而命令Spring去寻找带有 @Component注解的类，并创建bean。
+
+**定义多媒体播放器接口**
+``` java
+
+	public interface MediaPlayer {
+	    void play();
+	}
+```	
 
 ### 启用组件扫描包括Java和XML两种方式
 
@@ -61,8 +69,8 @@ keywords: spring,自动装配
 	public class CDPlayerConfig {
 	}
 ```	
-注意，类CDPlayerConfig通过Java代码定义了Spring的装配规则，但是可以看出并没有显示地声明任何bean，只不过它使用了<u>@ComponentScan注解，这个注解能够在Spring中启用组件扫描。（@Configuration注解表明这个类是一个配置类）</u>
-如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包。因为CDPlayerConfig位于sound system包中，因此Spring默认将会扫描这个包以及这个包下的所有子包，查找所有带有 @Component注解的类。这样的话，SgtPeppers类就会被自动创建一个bean。
+注意，类CDPlayerConfig通过Java代码定义了Spring的装配规则，但是可以看出并没有显示地声明任何bean，只不过它使用了<u>@ComponentScan注解，这个注解能够在Spring中启用组件扫描。（@Configuration注解表明这个类是一个配置类）</u>如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包以及这个包下的所有子包，查找所有带有 @Component注解的类。这样的话，SgtPeppers类就会被自动创建一个bean。
+Spring之所以存在是因为解耦和，即不用传统方法来new一个新的实例，因此在实现类中使用@Component标明，即可达到效果
 2. 通过XML启用组件扫描
 ``` java
 
@@ -96,9 +104,19 @@ keywords: spring,自动装配
 2. @Autowried注解用在Setter方法上
 ``` java
 
-	@Autowired
-	public void setCompactDisc(CompactDisc cd) {
+	@Component
+	public class CDPlayer implements MediaPlayer {
+	  private CompactDisc cd;
+	
+	  @Autowired
+	  public void setCompactDisc(CompactDisc cd) {
 	    this.cd = cd;
+	  }
+	
+	  public void play() {
+	    cd.play();
+	  }
+	
 	}
 ```	
 事实上，@Autowried注解可以用在类的任何方法上去引入依赖的bean，Spring都会尝试满足方法参数上所声明的依赖。
@@ -111,9 +129,34 @@ keywords: spring,自动装配
 	}
 ```		
 设置以后，会尝试自动装配，但是如果没有匹配的bean，Spring默认会处于未装配的状态。但是把required设置为false时，需要谨慎对待，如果代码中没有进行null检查的话，建议不使用，不然就会出现NullPointerException异常。
-			
-	
-	
+
+## 测试
+``` java
+
+	public class CDPlayerTest {
+	    
+	    @Rule
+	    public final StandardOutputStreamLog log=new StandardOutputStreamLog();//需要引入system-rules-1.3.0.jar
+	    
+	    @Autowired
+	    private MediaPlayer player;
+	    
+	    @Autowired
+	    private CompactDisc cd;
+	    
+	    @Test
+	    public void cdShouldNotBeNull() {
+	        assertNotNull(cd);//如果测试正常，说名cd已被初始化，Spring依赖注入有效发挥作用了（该方法不是自己写的，应该是个工具类似的）
+	    }
+	    
+	    @Test
+	    public void play(){
+	        player.play();
+	        assertEquals("Info of CD playing :This CD's title:K歌之王;artist:陈奕迅", log.getLog());（该方法不是自己写的，应该是个工具类似的）
+	    }
+	}	
+```
+CDPlayer的构造器中添加了@Autowired注解，Spring将把一个可分配给CompactDisc类型的bean自动注入进来。除了注入CompactDisc，我们还将CDPlayerbean注入到测试代码的player成员变量之中（它是更为通用的MediaPlayer类型）。在play()测试方法中，我们可以调用CDPlayer的play()方法，并断言它的行为与你的预期一致。
 	
 	
 	
