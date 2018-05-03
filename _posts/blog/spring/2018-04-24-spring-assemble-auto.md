@@ -16,7 +16,7 @@ keywords: spring,自动装配
 &nbsp;
 &nbsp;
 
-## 自动装配bean的过程:
+## 1.自动装配bean的过程:
 1. 把需要被扫描的类，添加 @Component注解，使它能够被Spring自动发现。
 2. 通过显示的设置Java代码 @ComponentScan注解或XML配置，让Spring开启组件扫描，并将扫描的结果类创建bean。
 3. @Autowried注解能实现bean的自动装配，实现依赖注入
@@ -34,9 +34,9 @@ keywords: spring,自动装配
 &nbsp;
 
 
-## 组件扫描
+## 2.组件扫描
 
-#### 创建CompactDisc接口：
+#### 2.1创建CompactDisc接口：
 
 ``` java
 
@@ -45,7 +45,7 @@ keywords: spring,自动装配
 	}
 ```
 
-#### 实现CompactDisc接口：
+#### 2.2实现CompactDisc接口：
 
 ``` java
 
@@ -64,7 +64,7 @@ keywords: spring,自动装配
 &emsp;&emsp;在SgtPeppers类上使用了 <u>@Component注解，这个注解表明该类会作为组件类</u>，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
 不过组件扫描默认是不开启的。我们需要显示配置一下Spring，从而命令Spring去寻找带有 @Component注解的类，并创建bean。
 
-#### 定义多媒体播放器接口 
+#### 2.3定义多媒体播放器接口 
 
 &nbsp;
 
@@ -75,11 +75,11 @@ keywords: spring,自动装配
 	}
 ```	
 
-#### 启用组件扫描包括Java和XML两种方式
+#### 2.4启用组件扫描包括Java和XML两种方式
 
 &nbsp;
 
-1. 通过Java启用组件扫描
+*1. 通过Java启用组件扫描*
 ``` java
 
 	@Configuration
@@ -89,7 +89,8 @@ keywords: spring,自动装配
 ```	
 &emsp;&emsp;注意，类CDPlayerConfig通过Java代码定义了Spring的装配规则，但是可以看出并没有显示地声明任何bean，只不过它使用了<u>@ComponentScan注解，这个注解能够在Spring中启用组件扫描。（@Configuration注解表明这个类是一个配置类）</u>如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包以及这个包下的所有子包，查找所有带有 @Component注解的类。这样的话，SgtPeppers类就会被自动创建一个bean。
 Spring之所以存在是因为解耦和，即不用传统方法来new一个新的实例，因此在实现类中使用@Component标明，即可达到效果
-2. 通过XML启用组件扫描
+&nbsp;
+*2. 通过XML启用组件扫描*
 ``` java
 
 	<context:component-scan base-package="..." />
@@ -99,11 +100,11 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 &nbsp;
 &nbsp;
 
-## 自动装配
+## 3.自动装配
 
 &emsp;&emsp;自动装配就是让Spring自动满足bean依赖的一种方式，在满足依赖的过程中，会在Spring的上下文中寻找匹配一个bean需求的其他bean。为了声明要进行自动装配，我们可以借助Spring的 **@Autowried注解**。
 
-1. @Autowried注解用在构造器上
+#### 3.1@Autowried注解用在构造器上
 下面是CDPlayer类，它在构造器上添加了 @Autowried注解，这表明当创建CDPlayer bean的时候，会通过这个构造器来进行实例化并且会传入一个可设置给CompactDisc类型的bean。
 ``` java
 
@@ -123,7 +124,7 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 	}
 ```	
 	
-2. @Autowried注解用在Setter方法上
+#### 3.2@Autowried注解用在Setter方法上
 ``` java
 
 	@Component
@@ -157,7 +158,7 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 &nbsp;
 &nbsp;
 
-## 测试
+## 4.测试
 
 
 ``` java
