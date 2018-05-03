@@ -85,8 +85,6 @@ keywords: spring,自动装配
 &emsp;&emsp;注意，类CDPlayerConfig通过Java代码定义了Spring的装配规则，但是可以看出并没有显示地声明任何bean，只不过它使用了<u>@ComponentScan注解，这个注解能够在Spring中启用组件扫描。（@Configuration注解表明这个类是一个配置类）</u>如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包以及这个包下的所有子包，查找所有带有 @Component注解的类。这样的话，SgtPeppers类就会被自动创建一个bean。
 Spring之所以存在是因为解耦和，即不用传统方法来new一个新的实例，因此在实现类中使用@Component标明，即可达到效果
 
-&nbsp;
-
 *2. 通过XML启用组件扫描*
 ``` java
 
@@ -163,7 +161,7 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 	public class CDPlayerTest {
 	    
 	    @Rule
-	    public final StandardOutputStreamLog log=new StandardOutputStreamLog();//需要引入system-rules-1.3.0.jar
+	    public final StandardOutputStreamLog log=new StandardOutputStreamLog();
 	    
 	    @Autowired
 	    private MediaPlayer player;
@@ -173,7 +171,8 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 	    
 	    @Test
 	    public void cdShouldNotBeNull() {
-	        assertNotNull(cd);//如果测试正常，说名cd已被初始化，Spring依赖注入有效发挥作用了（该方法不是自己写的，应该是个工具类似的）
+	    	//如果测试正常，说名cd已被初始化，Spring依赖注入有效发挥作用了（该方法不是自己写的，应该是个工具类似的）
+	        assertNotNull(cd);
 	    }
 	    
 	    @Test
