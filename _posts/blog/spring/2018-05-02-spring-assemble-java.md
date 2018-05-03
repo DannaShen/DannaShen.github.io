@@ -30,6 +30,11 @@ keywords: spring,java代码装配
 &nbsp;
 
 创建JavaConfig类的关键在于为其添加@Configuration注解，@Configuration注解表明这个类是一个配置类，该类应该包含在Spring应用上下文中如何创建bean的细节。到此为止，我们都是依赖组件扫描来发现Spring应该创建的bean。<u>尽管我们可以同时使用组件扫描和显式配置</u>，但是在本节中，我们更加关注于显式配置，因此我将CDPlayerConfig的<u>@ComponentScan注解移除掉了</u>。移除了@ComponentScan注解，此时的CDPlayerConfig类就没有任何作用了。如果你现在运行CDPlayerTest的话，测试会失败，并且会出现BeanCreation- Exception异常。测试期望被注入CDPlayer和CompactDisc，但是这些bean根本就没有创建，因为组件扫描不会发现它们。
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
 ## 2.基础接口及类
 
@@ -77,12 +82,19 @@ keywords: spring,java代码装配
 	    this.cd = cd;
 	  }
 	
+	
 	  public void play() {
 	    cd.play();
 	  }
 	
 	}
 ```	
+
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
 ## 3.声明简单的bean
 
@@ -107,6 +119,12 @@ keywords: spring,java代码装配
 	}
 ```
 &emsp;&emsp;不管你采用什么方法来为bean命名，bean声明都是非常简单的。方法体返回了一个新的SgtPeppers实例。这里是使用Java来进行描述的，因此我们可以发挥Java提供的所有功能，只要最终生成一个CompactDisc实例即可。  
+
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
 ## 4.借助JavaConfig实现注入
 &emsp;&emsp;我们前面所声明的CompactDisc bean是非常简单的，它自身没有其他的依赖。但现在，我们需要声明CDPlayer bean，它依赖于CompactDisc。在JavaConfig中，要如何将它们装配在一起呢？  
