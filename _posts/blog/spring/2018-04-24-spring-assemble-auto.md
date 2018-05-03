@@ -25,7 +25,7 @@ keywords: spring,自动装配
 &nbsp;
 &nbsp;
 	
-> 案例：音响系统的组件。
+> 案例：音响系统的组件。  
 >首先为CD创建CompactDisc接口及实现类，Spring会发现它并将其创建为一个bean。然后，会创建一个CDPlayer类，让Spring发现它，并将CompactDisc bean注入进来。
 
 &nbsp;
@@ -46,7 +46,6 @@ keywords: spring,自动装配
 ```
 
 #### 2.2实现CompactDisc接口：
-
 ``` java
 
 	@Component
@@ -66,8 +65,6 @@ keywords: spring,自动装配
 
 #### 2.3定义多媒体播放器接口 
 
-&nbsp;
-
 ``` java
 
 	public interface MediaPlayer {
@@ -76,8 +73,6 @@ keywords: spring,自动装配
 ```	
 
 #### 2.4启用组件扫描包括Java和XML两种方式
-
-&nbsp;
 
 *1. 通过Java启用组件扫描*
 ``` java
@@ -182,11 +177,13 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 	    @Test
 	    public void play(){
 	        player.play();
-	        assertEquals("Info of CD playing :This CD's title:K歌之王;artist:陈奕迅", log.getLog());（该方法不是自己写的，应该是个工具类似的）
+	        //该方法不是自己写的，应该是个工具类似的
+	        assertEquals("Info of CD playing :This CD's title:K歌之王;artist:陈奕迅", log.getLog());
 	    }
 	}	
 ```
-&emsp;&emsp;CDPlayer的构造器中添加了@Autowired注解，Spring将把一个可分配给CompactDisc类型的bean自动注入进来。除了注入CompactDisc，我们还将CDPlayerbean注入到测试代码的player成员变量之中（它是更为通用的MediaPlayer类型）。在play()测试方法中，我们可以调用CDPlayer的play()方法，并断言它的行为与你的预期一致。
+&emsp;&emsp;CDPlayer的构造器中添加了@Autowired注解，Spring将把一个可分配给CompactDisc类型的bean自动注入进来。除了注入CompactDisc，
+我们还将CDPlayerbean注入到测试代码的player成员变量之中（它是更为通用的MediaPlayer类型）。在play()测试方法中，我们可以调用CDPlayer的play()方法，并断言它的行为与你的预期一致。
 	
 	
 	
