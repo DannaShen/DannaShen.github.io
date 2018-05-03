@@ -21,9 +21,14 @@ keywords: spring,自动装配
 > 案例：音响系统的组件。
 >首先为CD创建CompactDisc接口及实现类，Spring会发现它并将其创建为一个bean。然后，会创建一个CDPlayer类，让Spring发现它，并将CompactDisc bean注入进来。
 
+&nbsp;
+&nbsp;
+&nbsp;
+
+
 ## 组件扫描
 
-**创建CompactDisc接口：**
+#### 创建CompactDisc接口：
 
 ``` java
 
@@ -32,7 +37,7 @@ keywords: spring,自动装配
 	}
 ```
 
-**实现CompactDisc接口：**
+#### 实现CompactDisc接口：
 
 ``` java
 
@@ -51,7 +56,7 @@ keywords: spring,自动装配
 在SgtPeppers类上使用了 <u>@Component注解，这个注解表明该类会作为组件类</u>，并告知Spring要为这个类创建bean，不需要显示配置SgtPeppers bean。
 不过组件扫描默认是不开启的。我们需要显示配置一下Spring，从而命令Spring去寻找带有 @Component注解的类，并创建bean。
 
-**定义多媒体播放器接口**
+#### 定义多媒体播放器接口 
 ``` java
 
 	public interface MediaPlayer {
@@ -59,7 +64,7 @@ keywords: spring,自动装配
 	}
 ```	
 
-### 启用组件扫描包括Java和XML两种方式
+#### 启用组件扫描包括Java和XML两种方式
 
 1. 通过Java启用组件扫描
 ``` java
@@ -76,6 +81,9 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 
 	<context:component-scan base-package="..." />
 ```	
+&nbsp;
+&nbsp;
+&nbsp;
 
 ## 自动装配
 
@@ -130,7 +138,13 @@ Spring之所以存在是因为解耦和，即不用传统方法来new一个新�
 ```		
 设置以后，会尝试自动装配，但是如果没有匹配的bean，Spring默认会处于未装配的状态。但是把required设置为false时，需要谨慎对待，如果代码中没有进行null检查的话，建议不使用，不然就会出现NullPointerException异常。
 
+&nbsp;
+&nbsp;
+&nbsp;
+
 ## 测试
+
+
 ``` java
 
 	public class CDPlayerTest {
