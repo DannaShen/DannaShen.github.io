@@ -17,7 +17,7 @@ keywords: spring,XML装配
 &nbsp;
 
 ## 1.创建XML配置规范
-在使用JavaConfig的时候，这意味着要创建一个带有@Configuration注解的类，而在XML配置中，这意味着要创建一个XML文件，并且要以<beans>元素为根。
+&emsp;&emsp;在使用JavaConfig的时候，这意味着要创建一个带有@Configuration注解的类，而在XML配置中，这意味着要创建一个XML文件，并且要以<beans>元素为根。
 ``` xml
 
 	<?xml version="1.0" encoding="UTF-8"?>
@@ -83,18 +83,18 @@ keywords: spring,XML装配
  ``` xml
 
 	<bean id="cdPlayer" class="soundsystem.CDPlayer">
-		c：cd-ref="compactDisc" />
+		c:cd-ref="compactDisc" />
 ```
-属性名以“c:”开头，也就是命名空间的前缀。接下来就是要装配的构造器参数的名称，在此之后是“-ref”，这是一个命名的约定，它会告诉
+&emsp;&emsp;属性名以“c:”开头，也就是命名空间的前缀。接下来就是要装配的构造器参数的名称，在此之后是“-ref”，这是一个命名的约定，它会告诉
 Spring，正在装配的是一个bean的引用，这个bean的名字是compactDisc,而不是字面量“compactDisc”。  
-但是它直接引用了构造器参数的名称，替代的方案是我们使用参数在整个参数列表中的位置信息：
+&emsp;&emsp;但是它直接引用了构造器参数的名称，替代的方案是我们使用参数在整个参数列表中的位置信息：
 ``` xml
 
 	<bean id="cdPlayer" class="soundsystem.CDPlayer">
 		c：_0-ref="compactDisc" />
 ```
-将参数的名称替换成了“0”，也就是参数的索引。因为在XML中不允许数字作为属性的第一个字符，因此必须要添加一个下画线作为前缀  
-如果有多个构造器参数的话，这当然是很有用处的。在这里因为只有一个构造器参数，所以我们还有另外一个方案——根本不用去标示参数：
+&emsp;&emsp;将参数的名称替换成了“0”，也就是参数的索引。因为在XML中不允许数字作为属性的第一个字符，因此必须要添加一个下画线作为前缀  
+&emsp;&emsp;如果有多个构造器参数的话，这当然是很有用处的。在这里因为只有一个构造器参数，所以我们还有另外一个方案——根本不用去标示参数：
 ``` xml
 
 	<bean id="cdPlayer" class="soundsystem.CDPlayer">
@@ -102,7 +102,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 ```
 
 ###### 3.2.1将字面量注入到构造器中
- 我们所做的DI通常指的都是类型的装配——也就是将对象的引用装配到依赖于它们的其他对象之中——而有时候，我们需要做的只是用一个字面量值来配置对象。为了阐述这一点，假设你要创建CompactDisc的一个新实现，如下所示：
+&emsp;&emsp; 我们所做的DI通常指的都是类型的装配——也就是将对象的引用装配到依赖于它们的其他对象之中——而有时候，我们需要做的只是用一个字面量值来配置对象。为了阐述这一点，假设你要创建CompactDisc的一个新实现，如下所示：
  ``` java
 
 	public class BlankDisc implements CompactDisc {
@@ -122,7 +122,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 	}
 
 ```
- 在SgtPeppers中，唱片名称和艺术家的名字都是硬编码的，但是这个CompactDisc实现与之不同，它更加灵活。现在，我们可以将已有的SgtPeppers替换为这个类：
+ &emsp;&emsp;在SgtPeppers中，唱片名称和艺术家的名字都是硬编码的，但是这个CompactDisc实现与之不同，它更加灵活。现在，我们可以将已有的SgtPeppers替换为这个类：
  ``` xml
 
 	<bean id="compactDisc" class="soundsystem.BlankDisc">
@@ -130,7 +130,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 		<constructor-arg value="The Beatles" />
 	</bean>
 ```
-我们再次使用<constructor-arg>元素进行构造器参数的注入。但是这一次我们没有使用“ref”属性来引用其他的bean，而是使用了value属性，通过该属性表明给定的值要以字面量的形式注入到构造器之中。 
+&emsp;&emsp;我们再次使用<constructor-arg>元素进行构造器参数的注入。但是这一次我们没有使用“ref”属性来引用其他的bean，而是使用了value属性，通过该属性表明给定的值要以字面量的形式注入到构造器之中。 
 如果要使用c-命名空间的话，这个例子又该是什么样子呢？第一种方案是引用构造器参数的名字：
  ``` xml
 
@@ -139,7 +139,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 		<c:artist="The Beatles" />
 	</bean>
 ```
-可以看到，装配字面量与装配引用的区别在于属性名中去掉了“-ref”后缀。与之类似，我们也可以通过参数索引装配相同的字面量值，如下所示：
+&emsp;&emsp;可以看到，装配字面量与装配引用的区别在于属性名中去掉了“-ref”后缀。与之类似，我们也可以通过参数索引装配相同的字面量值，如下所示：
  ``` xml
 
 	<bean id="compactDisc" class="soundsystem.BlankDisc">
@@ -147,14 +147,14 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 		<c:_1="The Beatles" />
 	</bean>
 ```
-如果只有一个构造器参数的话,我们可以在Spring中这样声明它：
+&emsp;&emsp;如果只有一个构造器参数的话,我们可以在Spring中这样声明它：
  ``` xml
 
 	<bean id="compactDisc" class="soundsystem.BlankDisc">
 		<c:_="Sgt. Pepper's Lonely Hearts Club Band" />
 	</bean>
 ```
- 在装配bean引用和字面量值方面，<constructor-arg>和c-命名空间的功能是相同的。但是有一种情况是<constructor-arg>能够实现，c-命名空间却无法做到的。接下来，让我们看一下如何将集合装配到构造器参数中
+ &emsp;&emsp;在装配bean引用和字面量值方面，<constructor-arg>和c-命名空间的功能是相同的。但是有一种情况是<constructor-arg>能够实现，c-命名空间却无法做到的。接下来，让我们看一下如何将集合装配到构造器参数中
  
 ###### 3.2.2装配集合
  请考虑下面这个新的BlankDisc：
@@ -208,7 +208,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 		</constructor-arg>
 	</bean>
 ``` 
- 其中，<list>元素是<constructor-arg>的子元素，这表明一个包含值的列表将会传递到构造器中。其中，<value>元素用来指定列表中的每个元素。  
+ &emsp;&emsp;其中，<list>元素是<constructor-arg>的子元素，这表明一个包含值的列表将会传递到构造器中。其中，<value>元素用来指定列表中的每个元素。  
  与之类似，我们也可以使用<ref>元素替代<value>，实现bean引用列表的装配。如下所示：
   ``` xml
 
@@ -227,7 +227,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 ``` 
 
 ## 4.设置属性
-选择构造器注入还是属性注入,作为一个通用的规则，我倾向于对强依赖使用构造器注入，而对可选性的依赖使用属性注入。  
+&emsp;&emsp;选择构造器注入还是属性注入,作为一个通用的规则，我倾向于对强依赖使用构造器注入，而对可选性的依赖使用属性注入。  
 
 #### 4.1 Spring XML实现引用属性注入:
   ``` xml
@@ -236,9 +236,10 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 		<property name="compactDisc" ref="compactDisc"/>
 	</bean>
 ```
- <property>元素为属性的Setter方法所提供的功能与<constructor-arg>元素为构造器所提供的功能是一样的。  
- Spring为<constructor-arg>元素提供了c-命名空间作为替代方案，与之类似，Spring提供了更加简洁的p-命名空间，作为<property>元素的替代方案。为了启用p-命名空间，必须要在XML文件中与其他的命名空间一起对其进行声明：
-``` xml
+  &emsp;&emsp;property标签为属性的Setter方法所提供的功能与<constructor-arg>元素为构造器所提供的功能是一样的。  
+ &emsp;&emsp;Spring为<constructor-arg>元素提供了c-命名空间作为替代方案，与之类似，Spring提供了更加简洁的p-命名空间，作为<property>元素的替代方案。为了启用p-命名空间，必须要在XML文件中与其他的命名空间一起对其进行声明：
+ 
+	``` xml
 
 	<?xml version="1.0" encoding="UTF-8"?>
 	<beans xmlns="http://www.springframework.org/schema/beans";
@@ -307,7 +308,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 		</property>
 	</bean>
 ``` 
- 与c-命名空间一样，装配bean引用与装配字面量的唯一区别在于是否带有“-ref”后缀。如果没有“-ref”后缀的话，所装配的就是字面量。
+&emsp;&emsp; 与c-命名空间一样，装配bean引用与装配字面量的唯一区别在于是否带有“-ref”后缀。如果没有“-ref”后缀的话，所装配的就是字面量。
 但需要注意的是，我们不能使用p-命名空间来装配集合，没有便利的方式使用p-命名空间来指定一个值（或bean引用）的列表。但是，我们可以使用Spring util-命名空间中的一些功能来简化BlankDisc bean。  
 首先，需要在XML中声明util-命名空间及其模式：
 ``` xml
@@ -324,7 +325,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 	 ...
 	</beans>
 ``` 
-util-命名空间所提供的功能之一就是<util:list>元素，它会创建一个列表的bean。借助<util:list>，我们可以将磁道列表转移到BlankDisc bean之外，并将其声明到单独的bean之中，如下所示：
+&emsp;&emsp;util-命名空间所提供的功能之一就是<util:list>元素，它会创建一个列表的bean。借助<util:list>，我们可以将磁道列表转移到BlankDisc bean之外，并将其声明到单独的bean之中，如下所示：
 ``` xml
 	
 	<util:list id="trackList">
