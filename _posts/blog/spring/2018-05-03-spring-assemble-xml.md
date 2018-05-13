@@ -64,7 +64,7 @@ keywords: spring,XML装配
 ```
 &emsp;&emsp;当Spring遇到这个<bean>元素时，它会创建一个CDPlayer实例。<constructor-arg>元素会告知Spring要将一个ID为compactDisc的bean引用传递到CDPlayer的构造器中
 
-#### 3.2spring的c-命名空间
+#### 3.2spring的c-命名空间 
 &emsp;&emsp;要使用它的话，必须要在XML的顶部声明其模式（加上：xmlns:c="http://www.springframework.org/schema/c";）：
 ``` xml
 
