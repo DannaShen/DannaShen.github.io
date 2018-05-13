@@ -338,7 +338,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
  ``` xml
 
 	<bean 	id="compactDisc" 
-			class="soundsystem.BlankDisc"
+			class="soundsystem.BlankDisc" 
 			p:title="Sgt.Pepper's Lonely Hearts Club Band"
 			p:artist="The Beatles"
 			p:tracks-ref="trackList">
