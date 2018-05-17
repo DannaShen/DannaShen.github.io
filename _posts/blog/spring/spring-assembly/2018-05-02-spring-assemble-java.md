@@ -1,7 +1,7 @@
 ---
 layout: post
 title: spring之java代码装配bean
-categories: spring-assembly
+categories: spring
 description: spring之java代码装配bean
 keywords: spring,java代码装配
 ---

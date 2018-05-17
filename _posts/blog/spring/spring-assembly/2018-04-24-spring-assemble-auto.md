@@ -1,7 +1,7 @@
 ---
 layout: post
 title: spring之自动装配bean
-categories: spring-assembly
+categories: spring
 description: spring之自动装配bean
 keywords: spring,自动装配
 ---

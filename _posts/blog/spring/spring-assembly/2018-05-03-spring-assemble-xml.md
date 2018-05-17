@@ -1,7 +1,7 @@
 ---
 layout: post
 title: spring之XML装配bean
-categories: spring-assembly
+categories: spring
 description: spring之XML装配bean
 keywords: spring,XML装配
 ---
