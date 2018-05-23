@@ -13,7 +13,7 @@ keywords: HBase
 注意：术语“store”是用于区域来解释存储结构。
 
 
-![](/images/BigData/hbase-detail-architecture.png)
+![](/images/posts/BigData/hbase-detail-architecture.png)
 
 HBase有三个主要组成部分：客户端库，主服务器和区域服务器。区域服务器可以按要求添加或删除。
 
@@ -36,7 +36,7 @@ HBase有三个主要组成部分：客户端库，主服务器和区域服务器
 	
 	需要深入探讨区域服务器：包含区域和存储，如下图所示：
 	
-![](/images/BigData/hbase-detail-regionServer.png)
+![](/images/posts/BigData/hbase-detail-regionServer.png)
 
 存储包含内存存储和HFiles。memstore就像一个高速缓存。在这里开始进入了HBase存储。数据被传送并保存在Hfiles作为块并且memstore刷新。 
 	

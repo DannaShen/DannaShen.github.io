@@ -35,15 +35,15 @@ keywords: HBase
 
 ## Hbase架构体系与设计模型
 
-![](/images/BigData/hbase-architectrue-system.png)
+![](/images/posts/BigData/hbase-architectrue-system.png)
 
 > 表结构模型并举例说明：
 
-![](/images/BigData/table-format.png)
+![](/images/posts/BigData/table-format.png)
 可看作为：
-![](/images/BigData/table-example.png)
+![](/images/posts/BigData/table-example.png)
 举例：
-![](/images/BigData/table-example-data.png)
+![](/images/posts/BigData/table-example-data.png)
 
 > 列簇
 
@@ -54,7 +54,7 @@ keywords: HBase
 
 > hbase表与关系型数据库表结构对比
 
-![](/images/BigData/table-compare.png)
+![](/images/posts/BigData/table-compare.png)
 
 
 ## Hbase的安装部署
