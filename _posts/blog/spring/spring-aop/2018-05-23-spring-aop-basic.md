@@ -471,20 +471,20 @@ Spring配置中声明切面，而不需要使用注解。
 ```  
 
 &emsp;&emsp;关于Spring AOP配置元素，第一个需要注意的事项是大多数的AOP配置元素必须在<aop:config>元素的上下文内使用。这条规则有几
-种例外场景，但是把bean声明为一个切面时，我们总是从<aop:config>元素开始配置的。    
+种例外场景，但是把bean声明为一个切面时，我们总是从<aop:config>元素开始配置的。  
 &emsp;&emsp;在<aop:config>元素内，我们可以声明一个或多个通知器、切面或者切点。在程序清单4.9中，我们使用<aop:aspect>元素声明了
 一个简单的切面。ref元素引用了一个POJO bean，该bean实现了切面的功能——在这里就是audience。ref元素所引用的bean提供了在
-切面中通知所调用的方法。    
+切面中通知所调用的方法。  
 &emsp;&emsp;该切面应用了四个不同的通知。两个<aop:before>元素定义了匹配切点的方法执行之前调用前置通知方法—也就是Audience bean
 的takeSeats()和turnOffCellPhones()方法（由method属性所声明）。<aop:after-returning>元素定义了一个返回（after-returning）
 通知，在切点所匹配的方法调用之后再调用applaud()方法。同样，<aop:after-throwing>元素定义了异常（after-throwing）通知，
-如果所匹配的方法执行时抛出任何的异常，都将会调用demandRefund()方法。图4.8展示了通知逻辑如何织入到业务逻辑中。    
-![](/images/posts/spring/spring-aop/advice_work_in_pointcut.png)    
+如果所匹配的方法执行时抛出任何的异常，都将会调用demandRefund()方法。图4.8展示了通知逻辑如何织入到业务逻辑中。  
+![](/images/posts/spring/spring-aop/advice_work_in_pointcut.png)  
 &emsp;&emsp;在所有的通知元素中，pointcut属性定义了通知所应用的切点，它的值是使用AspectJ切点表达式语法所定义的切点。  
-你或许注意到所有通知元素中的pointcut属性的值都是一样的，这是因为所有的通知都要应用到相同的切点上。    
-在基于AspectJ注解的通知中，当发现这种类型的重复时，我们使用@Pointcut注解消除了这些重复的内容。而在基于XML的切面声
+你或许注意到所有通知元素中的pointcut属性的值都是一样的，这是因为所有的通知都要应用到相同的切点上。  
+&emsp;&emsp;在基于AspectJ注解的通知中，当发现这种类型的重复时，我们使用@Pointcut注解消除了这些重复的内容。而在基于XML的切面声
 明中，我们需要使用<aop:pointcut>元素。如下的XML展现了如何将通用的切点表达式抽取到一个切点声明中，这样这个声明就能在
-所有的通知元素中使用了。    
+所有的通知元素中使用了。  
 程序清单4.10　使用<aop:pointcut>定义命名切点  
 ``` xml
 
