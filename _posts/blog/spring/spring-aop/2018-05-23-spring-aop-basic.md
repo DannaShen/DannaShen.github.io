@@ -470,9 +470,9 @@ Spring配置中声明切面，而不需要使用注解。
     </aop>
 ```  
 
-&emsp;&emsp;关于Spring AOP配置元素，第一个需要注意的事项是大多数的AOP配置元素必须在<aop:config>元素的上下文内使用。这条规则有几
-种例外场景，但是把bean声明为一个切面时，我们总是从<aop:config>元素开始配置的。  
-&emsp;&emsp;在<aop:config>元素内，我们可以声明一个或多个通知器、切面或者切点。在程序清单4.9中，我们使用<aop:aspect>元素声明了
+&emsp;&emsp;关于Spring AOP配置元素，第一个需要注意的事项是大多数的AOP配置元素必须在``` java <aop:config> ```元素的上下文内使用。这条规则有几
+种例外场景，但是把bean声明为一个切面时，我们总是从``` java <aop:config> ```元素开始配置的。  
+&emsp;&emsp;在``` java <aop:config> ```元素内，我们可以声明一个或多个通知器、切面或者切点。在程序清单4.9中，我们使用<aop:aspect>元素声明了
 一个简单的切面。ref元素引用了一个POJO bean，该bean实现了切面的功能——在这里就是audience。ref元素所引用的bean提供了在
 切面中通知所调用的方法。  
 &emsp;&emsp;该切面应用了四个不同的通知。两个<aop:before>元素定义了匹配切点的方法执行之前调用前置通知方法—也就是Audience bean
