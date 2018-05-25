@@ -6,9 +6,9 @@ description: spring之面向切面编程
 keywords: spring,切面,aop
 ---
 
-> 在软件开发中，散布于应用中多处的功能被称为横切关注点（cross-cutting concern）。
-> 通常来讲，这些横切关注点从概念上是与应用的业务逻辑相分离的（但是往往会直接嵌入到应用的业务逻辑之中）。
-> 把这些横切关注点与业务逻辑相分离正是面向切面编程（AOP）所要解决的问题
+> 在软件开发中，散布于应用中多处的功能被称为横切关注点（cross-cutting concern）。  
+> 通常来讲，这些横切关注点从概念上是与应用的业务逻辑相分离的（但是往往会直接嵌入到应用的业务逻辑之中）。  
+> 把这些横切关注点与业务逻辑相分离正是面向切面编程（AOP）所要解决的问题  
 > 本章展示了Spring对切面的支持，包括如何把普通类声明为一个切面和如何使用注解创建切面。除此之外，我们还会看到AspectJ——另
   一种流行的AOP实现
 
@@ -19,9 +19,9 @@ keywords: spring,切面,aop
 &nbsp;
 
 ## 1.什么是面向切面编程
-&emsp;&emsp;横切关注点可以被描述为影响应用多处的功能。例如，安全就是一个横切关注点，应用中的许多方法都会涉及到安全规则。
-图4.1直观呈现了横切关注点的概念。
-![](/images/posts/spring/spring-aop/crosscuting_concerns_modularize.png)
+&emsp;&emsp;横切关注点可以被描述为影响应用多处的功能。例如，安全就是一个横切关注点，应用中的许多方法都会涉及到安全规则。  
+图4.1直观呈现了横切关注点的概念。  
+![](/images/posts/spring/spring-aop/crosscuting_concerns_modularize.png)  
 图4.1展现了一个被划分为模块的典型应用。每个模块的核心功能都是为特定业务领域提供服务，但是这些模块都需要类似的辅助功能，
 例如安全和事务管理。如果要重用通用功能的话，最常见的面向对象技术是继承（inheritance）或委托（delegation）。但是，
 如果在整个应用中都使用相同的基类，继承往往会导致一个脆弱的对象体系；而使用委托可能需要对委托对象进行复杂的调用。  
@@ -31,8 +31,9 @@ keywords: spring,切面,aop
 而不是分散到多处代码中；其次，服务模块更简洁，因为它们只包含主要关注点（或核心功能）的代码，而次要关注点的代码被转移到切面中了。
 
 #### 1.1 定义AOP术语
-描述切面的常用术语有通知（advice）、切点（pointcut）和连接点（join point）。图4.2展示了这些概念是如何关联在一起的。
-![](/images/posts/spring/spring-aop/aop_relation_graph.png)
+描述切面的常用术语有通知（advice）、切点（pointcut）和连接点（join point）。  
+图4.2展示了这些概念是如何关联在一起的。  
+![](/images/posts/spring/spring-aop/aop_relation_graph.png)  
 
 ###### 1.1.1 通知（Advice）
 当抄表员出现在我们家门口时，他们要登记用电量并回去向电力公司报告。显然，他们必须有一份需要抄表的住户清单，他们所汇报的信
@@ -41,11 +42,12 @@ keywords: spring,切面,aop
 通知定义了切面是什么以及何时使用。除了描述切面要完成的工作，通知还解决了何时执行这个工作的问题。它应该应用在某个方法被调
 用之前？之后？之前和之后都调用？还是只在方法抛出异常时调用  
 > Spring切面可以应用5种类型的通知：
-> 前置通知（Before）：在目标方法被调用之前调用通知功能；
-> 后置通知（After）：在目标方法完成之后调用通知，此时不会关心方法的输出是什么；
-> 返回通知（After-returning）：在目标方法成功执行之后调用通知；
-> 异常通知（After-throwing）：在目标方法抛出异常后调用通知；
-> 环绕通知（Around）：通知包裹了被通知的方法，在被通知的方法调用之前和调用之后执行自定义的行为。
+> 前置通知（Before）：在目标方法被调用之前调用通知功能；  
+> 后置通知（After）：在目标方法完成之后调用通知，此时不会关心方法的输出是什么；  
+> 返回通知（After-returning）：在目标方法成功执行之后调用通知；  
+> 异常通知（After-throwing）：在目标方法抛出异常后调用通知；  
+> 环绕通知（Around）：通知包裹了被通知的方法，在被通知的方法调用之前和调用之后执行自定义的行为。  
+
 ###### 1.1.2 连接点（Join point）
 电力公司为多个住户提供服务，甚至可能是整个城市。每家都有一个电表，这些电表上的数字都需要读取，因此每家都是抄表员的潜在目标。
 抄表员也许能够读取各种类型的设备，但是为了完成他的工作，他的目标应该房屋内所安装的电表。  
@@ -390,7 +392,7 @@ public class EncoreableIntroducer {
 3. @DeclareParents注解所标注的静态属性指明了要引入接口。在这里，我们所引入的是Encoreable接口。
 和其他的切面一样，我们需要在Spring应用中将EncoreableIntroducer声明为一个bean：  
 ``` xml
-<bean class="concert.EncoreableIntroducer">
+<bean class="concert.EncoreableIntroducer" />
 ```
 Spring的自动代理机制将会获取到它的声明，当Spring发现一个bean使用了@Aspect注解时，Spring就会创建一个代理，然后将调用委托给
 被代理的bean或被引入的实现，这取决于调用的方法属于被代理的bean还是属于被引入的接口。  
@@ -401,11 +403,11 @@ XML配置文件中声明切面。
 ## 4 在XML中声明切面
 在本书前面的内容中，我曾经建立过这样一种原则，那就是基于注解的配置要优于基于Java的配置，基于Java的配置要优于基于XML的配
 置。但是，如果你需要声明切面，但是又不能为通知类添加注解的时候，那么就必须转向XML配置了。  
-在Spring的aop命名空间中，提供了多个元素用来在XML中声明切面，如表4.3所示。
-![](/images/posts/spring/spring-aop/aop_no_invasive.png)
+在Spring的aop命名空间中，提供了多个元素用来在XML中声明切面，如表4.3所示。  
+![](/images/posts/spring/spring-aop/aop_no_invasive.png)  
 我们已经看过了<aop:aspectj-autoproxy>元素，它能够自动代理AspectJ注解的通知类。aop命名空间的其他元素能够让我们直接在
 Spring配置中声明切面，而不需要使用注解。  
-例如，我们重新看一下Audience类，这一次我们将它所有的AspectJ注解全部移除掉：
+例如，我们重新看一下Audience类，这一次我们将它所有的AspectJ注解全部移除掉：  
 ``` java
 
     public  void  performance(){}
@@ -432,7 +434,7 @@ Spring配置中声明切面，而不需要使用注解。
 尽管看起来并没有什么差别，但Audience已经具备了成为AOP通知的所有条件。我们再稍微帮助它一把，它就能够成为预期的通知了。
 #### 4.1 声明前置和后置通知
 我们会使用Spring aop命名空间中的一些元素，将没有注解的Audience类转换为切面。下面的程序清单4.9展示了所需要的XML。  
-程序清单4.9　通过XML将无注解的Audience声明为切面
+程序清单4.9　通过XML将无注解的Audience声明为切面  
 ``` xml
 
     <aop:config>
@@ -451,7 +453,7 @@ Spring配置中声明切面，而不需要使用注解。
               method="demandRefund" />
         </aop:aspect>
     </aop>
-```
+```  
 关于Spring AOP配置元素，第一个需要注意的事项是大多数的AOP配置元素必须在<aop:config>元素的上下文内使用。这条规则有几
 种例外场景，但是把bean声明为一个切面时，我们总是从<aop:config>元素开始配置的。  
 在<aop:config>元素内，我们可以声明一个或多个通知器、切面或者切点。在程序清单4.9中，我们使用<aop:aspect>元素声明了
@@ -467,7 +469,7 @@ Spring配置中声明切面，而不需要使用注解。
 在基于AspectJ注解的通知中，当发现这种类型的重复时，我们使用@Pointcut注解消除了这些重复的内容。而在基于XML的切面声
 明中，我们需要使用<aop:pointcut>元素。如下的XML展现了如何将通用的切点表达式抽取到一个切点声明中，这样这个声明就能在
 所有的通知元素中使用了。  
-程序清单4.10　使用<aop:pointcut>定义命名切点
+程序清单4.10　使用<aop:pointcut>定义命名切点  
 ``` xml
 
     <aop:config>
@@ -489,7 +491,7 @@ Spring配置中声明切面，而不需要使用注解。
               method="demandRefund" />
         </aop:aspect>
     </aop>
-```
+```  
 现在切点是在一个地方定义的，并且被多个通知元素所引用。<aop:pointcut>元素定义了一个id为performance的切点。同时修改所有的
 通知元素，用pointcut-ref属性来引用这个命名切点。  
 正如程序清单4.10所展示的，<aop:pointcut>元素所定义的切点可以被同一个<aop:aspect>元素之内的所有通知元素引用。如果想让定义的
@@ -503,7 +505,7 @@ Spring配置中声明切面，而不需要使用注解。
 相对于前置通知和后置通知，环绕通知在这点上有明显的优势。使用环绕通知，我们可以完成前置通知和后置通知所实现的相同功能，而
 且只需要在一个方法中 实现。因为整个通知逻辑是在一个方法内实现的，所以不需要使用成员变量保存状态。  
 例如，考虑程序清单4.11中新Audience类的watchPerformance()方法，它没有使用任何的注解。  
-程序清单4.11　watchPerformance()方法提供了AOP环绕通知
+程序清单4.11　watchPerformance()方法提供了AOP环绕通知  
 ``` java
 public class Audience {
 
@@ -518,10 +520,10 @@ public class Audience {
         }
     }
 }
-```
+```  
 在观众切面中，watchPerformance()方法包含了之前四个通知方法的所有功能。不过，所有的功能都放在了这一个方法中，因此这个
 方法还要负责自身的异常处理。声明环绕通知与声明其他类型的通知并没有太大区别。我们所需要做的仅仅是使用<aop:around>元素。  
-程序清单4.12　在XML中使用<aop:around>元素声明环绕通知
+程序清单4.12　在XML中使用<aop:around>元素声明环绕通知  
 ``` xml
 
     <aop:config>
@@ -534,12 +536,12 @@ public class Audience {
                method="watchPerformance" />
         </aop:aspect>
     </aop>
-```
+```  
 像其他通知的XML元素一样，<aop:around>指定了一个切点和一个通知方法的名字。在这里，我们使用跟之前一样的切点，但是为该
 切点所设置的method属性值为watchPerformance()方法  
 #### 4.3 为通知传递参数
 在4.3.3小节中，我们使用@AspectJ注解创建了一个切面，这个切面能够记录CompactDisc上每个磁道播放的次数。现在，我们使用
-XML来配置切面，那就看一下如何完成这一相同的任务。首先，我们要移除掉TrackCounter上所有的@AspectJ注解。
+XML来配置切面，那就看一下如何完成这一相同的任务。首先，我们要移除掉TrackCounter上所有的@AspectJ注解。  
 ``` java
 public class TrackCounter {
     private Map<Integer,Integer> trackCounts=new HashMap<>();
@@ -555,11 +557,11 @@ public class TrackCounter {
         return trackCounts.containsKey(trackNumber)?trackCounts.get(trackNumber):0;
     }
 }
-```
+```  
 去掉@AspectJ注解后，TrackCounter显得有些单薄了。现在，除非显式调用countTrack()方法，否则TrackCounter不会记录磁
 道播放的数量。但是，借助一点Spring XML配置，我们能够让TrackCounter重新变为切面。  
 如下的程序清单展现了完整的Spring配置，在这个配置中声明了TrackCounter bean和BlankDisc bean，并将TrackCounter转化为切面。  
-程序清单4.14　在XML中将TrackCounter配置为参数化的切面
+程序清单4.14　在XML中将TrackCounter配置为参数化的切面  
 ``` xml
 
     <aop:config>
@@ -573,7 +575,7 @@ public class TrackCounter {
         </aop:aspect>
     </aop:config>
     </aop>
-```
+```  
 可以看到，我们使用了和前面相同的aop命名空间XML元素。唯一明显的差别在于切点表达式中包含了一个参数，这个参数会传递到通知方法中。
 如果你将这个表达式与程序清单4.6中的表达式进行对比会发现它们几乎是相同的。唯一的差别在于这里使用and关键字而不是“&&”
 （因为在XML中，“&”符号会被解析为实体的开始）。我们通过练习已经使用Spring的aop命名空间声明了几个基本的切面，
@@ -581,7 +583,7 @@ public class TrackCounter {
 #### 4.4 通过切面引入新的功能
 在前面的4.3.4小节中，我向你展现了如何借助AspectJ的@DeclareParents注解为被通知的方法神奇地引入新的方法。但是
 AOP引入并不是AspectJ特有的。使用Spring aop命名空间中的<aop:declare-parents>元素，我们可以实现相同的功能。  
-如下的XML代码片段与之前基于AspectJ的引入功能是相同：
+如下的XML代码片段与之前基于AspectJ的引入功能是相同：  
 ``` xml
 
         <aop:aspect>
@@ -590,12 +592,12 @@ AOP引入并不是AspectJ特有的。使用Spring aop命名空间中的<aop:decl
                implement-interface="concert.Encoreable"
                default-impl="concert.DefaultEncoreable"/>
         </aop:aspect>
-```
+```  
 顾名思义，<aop:declare-parents>声明了此切面所通知的bean要在它的对象层次结构中拥有新的父类型。具体到本例中，类型匹
 配Performance接口（由types-matching属性指定）的那些bean在父类结构中会增加Encoreable接口（由implement-interface属性指定）。
 最后要解决的问题是Encoreable接口中的方法实现要来自于何处。  
 这里有两种方式标识所引入接口的实现。在本例中，我们使用default-impl属性用全限定类名来显式指定Encoreable的实
-现。或者，我们还可以使用delegate-ref属性来标识。  
+现。或者，我们还可以使用delegate-ref属性来标识。   
 ``` xml
 
         <aop:aspect>
@@ -621,7 +623,7 @@ AspectJ切面时几乎不会涉及到Spring。
 实例化这些协作的对象。但更好的方式是，我们可以借助Spring的依赖注入把bean装配进AspectJ切面中。  
 为了演示，我们为上面的演出创建一个新切面。具体来讲，我们以切面的方式创建一个评论员的角色，他会观看演出并且会在演出之后提
 供一些批评意见。下面的CriticAspect就是一个这样的切面。  
-程序清单4.15　使用AspectJ实现表演的评论员
+程序清单4.15　使用AspectJ实现表演的评论员  
 ``` java
 public aspect CriticAspect {
     public CriticAspect(){}
@@ -637,7 +639,7 @@ public aspect CriticAspect {
         this.criticismEngine = criticismEngine;
     }
 }
-```
+```  
 CriticAspect的主要职责是在表演结束后为表演发表评论。程序清单4.15中的performance()切点匹配perform()方法。当它
 与afterReturning()通知一起配合使用时，我们可以让该切面在表演结束时起作用。  
 程序清单4.15有趣的地方在于并不是评论员自己发表评论，实际上，CriticAspect与一个CriticismEngine对象相协作，在表
@@ -647,7 +649,7 @@ CriticAspect的主要职责是在表演结束后为表演发表评论。程序�
 置CriticismEngine。图4.9展示了此关系。
 ![](/images/posts/spring/spring-aop/Aspectj_inject.png)
 CriticismEngine自身是声明了一个简单getCriticism()方法的接口。程序清单4.16为CriticismEngine的实现。  
-程序清单4.16　要注入到CriticAspect中的CriticismEngine实现
+程序清单4.16　要注入到CriticAspect中的CriticismEngine实现  
 ``` java
 public class CriticismEngineImpl implements CriticismEngine{
     public CriticismEngineImpl(){}
