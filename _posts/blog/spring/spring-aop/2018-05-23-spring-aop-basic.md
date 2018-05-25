@@ -399,7 +399,9 @@ public class EncoreableIntroducer {
 2. defaultImpl属性指定了为引入功能提供实现的类。在这里，我们指定的是DefaultEncoreable提供实现。
 3. @DeclareParents注解所标注的静态属性指明了要引入接口。在这里，我们所引入的是Encoreable接口。
 和其他的切面一样，我们需要在Spring应用中将EncoreableIntroducer声明为一个bean：  
+  
 ``` xml
+
 <bean class="concert.EncoreableIntroducer" />
 ```
 
@@ -418,7 +420,7 @@ XML配置文件中声明切面。
 ![](/images/posts/spring/spring-aop/aop_no_invasive.png)  
 &emsp;&emsp;我们已经看过了<aop:aspectj-autoproxy>元素，它能够自动代理AspectJ注解的通知类。aop命名空间的其他元素能够让我们直接在
 Spring配置中声明切面，而不需要使用注解。  
-&emsp;&emsp;例如，我们重新看一下Audience类，这一次我们将它所有的AspectJ注解全部移除掉：  
+例如，我们重新看一下Audience类，这一次我们将它所有的AspectJ注解全部移除掉：  
 ``` java
 
     public  void  performance(){}
@@ -483,7 +485,7 @@ Spring配置中声明切面，而不需要使用注解。
 在基于AspectJ注解的通知中，当发现这种类型的重复时，我们使用@Pointcut注解消除了这些重复的内容。而在基于XML的切面声
 明中，我们需要使用<aop:pointcut>元素。如下的XML展现了如何将通用的切点表达式抽取到一个切点声明中，这样这个声明就能在
 所有的通知元素中使用了。  
-&emsp;&emsp;程序清单4.10　使用<aop:pointcut>定义命名切点  
+程序清单4.10　使用<aop:pointcut>定义命名切点  
 ``` xml
 
     <aop:config>
