@@ -232,7 +232,7 @@ Spring，正在装配的是一个bean的引用，这个bean的名字是compactDi
 #### 4.1 Spring XML实现引用属性注入:
   ``` xml
   
-	<bean id="compactDisc" class="soundsystem.BlankDisc">
+	<bean id="cdPlayer" class="soundsystem.CDPlayer">
 		<property name="compactDisc" ref="compactDisc"/>
 	</bean>
 ```
