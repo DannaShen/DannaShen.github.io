@@ -276,7 +276,7 @@ public class ConcertConfig {
     }
 }
 ```
-&emsp;&emsp;假如你在Spring中要使用XML来装配bean的话，那么需要使用Springaop命名空间中的``` java <aop:aspectj-autoproxy> ```元素。  
+&emsp;&emsp;假如你在Spring中要使用XML来装配bean的话，那么需要使用Springaop命名空间中的``` <aop:aspectj-autoproxy> ```元素。  
 不管你是使用JavaConfig还是XML，AspectJ自动代理都会为使用@Aspect注解的bean创建一个代理，这个代理会围绕着所有该切面
 的切点所匹配的bean。在这种情况下，将会为Concertbean创建一个代理，Audience类中的通知方法将会在perform()调用前后执行。    
 &emsp;&emsp;我们需要记住的是，Spring的AspectJ自动代理仅仅使用@AspectJ作为创建切面的指导，切面依然是基于代理的。在本质上，它依然是
@@ -418,7 +418,7 @@ XML配置文件中声明切面。
 置。但是，如果你需要声明切面，但是又不能为通知类添加注解的时候，那么就必须转向XML配置了。  
 &emsp;&emsp;在Spring的aop命名空间中，提供了多个元素用来在XML中声明切面，如表4.3所示。  
 ![](/images/posts/spring/spring-aop/aop_no_invasive.png)  
-&emsp;&emsp;我们已经看过了``` java <aop:aspectj-autoproxy> ```元素，它能够自动代理AspectJ注解的通知类。aop命名空间的其他元素能够让我们直接在
+&emsp;&emsp;我们已经看过了``` <aop:aspectj-autoproxy> ```元素，它能够自动代理AspectJ注解的通知类。aop命名空间的其他元素能够让我们直接在
 Spring配置中声明切面，而不需要使用注解。  
 例如，我们重新看一下Audience类，这一次我们将它所有的AspectJ注解全部移除掉：  
 ``` java
@@ -470,14 +470,14 @@ Spring配置中声明切面，而不需要使用注解。
     </aop>
 ```  
 
-&emsp;&emsp;关于Spring AOP配置元素，第一个需要注意的事项是大多数的AOP配置元素必须在``` java <aop:config> ```元素的上下文内使用。这条规则有几
-种例外场景，但是把bean声明为一个切面时，我们总是从``` java <aop:config> ```元素开始配置的。  
-&emsp;&emsp;在``` java <aop:config> ```元素内，我们可以声明一个或多个通知器、切面或者切点。在程序清单4.9中，我们使用``` java<aop:aspect> ```元素声明了
+&emsp;&emsp;关于Spring AOP配置元素，第一个需要注意的事项是大多数的AOP配置元素必须在``` <aop:config> ```元素的上下文内使用。这条规则有几
+种例外场景，但是把bean声明为一个切面时，我们总是从``` <aop:config> ```元素开始配置的。  
+&emsp;&emsp;在``` <aop:config> ```元素内，我们可以声明一个或多个通知器、切面或者切点。在程序清单4.9中，我们使用``` <aop:aspect> ```元素声明了
 一个简单的切面。ref元素引用了一个POJO bean，该bean实现了切面的功能——在这里就是audience。ref元素所引用的bean提供了在
 切面中通知所调用的方法。  
-&emsp;&emsp;该切面应用了四个不同的通知。两个``` java<aop:before> ```元素定义了匹配切点的方法执行之前调用前置通知方法—也就是Audience bean
-的takeSeats()和turnOffCellPhones()方法（由method属性所声明）。``` java <aop:after-returning> ```元素定义了一个返回（after-returning）
-通知，在切点所匹配的方法调用之后再调用applaud()方法。同样，``` java <aop:after-throwing> ```元素定义了异常（after-throwing）通知，
+&emsp;&emsp;该切面应用了四个不同的通知。两个``` <aop:before> ```元素定义了匹配切点的方法执行之前调用前置通知方法—也就是Audience bean
+的takeSeats()和turnOffCellPhones()方法（由method属性所声明）。```  <aop:after-returning> ```元素定义了一个返回（after-returning）
+通知，在切点所匹配的方法调用之后再调用applaud()方法。同样，```  <aop:after-throwing> ```元素定义了异常（after-throwing）通知，
 如果所匹配的方法执行时抛出任何的异常，都将会调用demandRefund()方法。图4.8展示了通知逻辑如何织入到业务逻辑中。 
  
 ![](/images/posts/spring/spring-aop/advice_work_in_pointcut.png)  
@@ -485,9 +485,9 @@ Spring配置中声明切面，而不需要使用注解。
 &emsp;&emsp;在所有的通知元素中，pointcut属性定义了通知所应用的切点，它的值是使用AspectJ切点表达式语法所定义的切点。  
 你或许注意到所有通知元素中的pointcut属性的值都是一样的，这是因为所有的通知都要应用到相同的切点上。  
 &emsp;&emsp;在基于AspectJ注解的通知中，当发现这种类型的重复时，我们使用@Pointcut注解消除了这些重复的内容。而在基于XML的切面声
-明中，我们需要使用``` java<aop:pointcut> ```元素。如下的XML展现了如何将通用的切点表达式抽取到一个切点声明中，这样这个声明就能在
+明中，我们需要使用```  <aop:pointcut> ```元素。如下的XML展现了如何将通用的切点表达式抽取到一个切点声明中，这样这个声明就能在
 所有的通知元素中使用了。  
-程序清单4.10　使用``` java<aop:pointcut> ```定义命名切点
+程序清单4.10　使用```  <aop:pointcut> ```定义命名切点
 ``` xml
 
     <aop:config>
@@ -510,10 +510,10 @@ Spring配置中声明切面，而不需要使用注解。
         </aop:aspect>
     </aop>
 ```  
-&emsp;&emsp;现在切点是在一个地方定义的，并且被多个通知元素所引用。``` java <aop:pointcut> ```元素定义了一个id为performance的切点。同时修改所有的
+&emsp;&emsp;现在切点是在一个地方定义的，并且被多个通知元素所引用。``` <aop:pointcut> ```元素定义了一个id为performance的切点。同时修改所有的
 通知元素，用pointcut-ref属性来引用这个命名切点。  
-&emsp;&emsp;正如程序清单4.10所展示的，``` java <aop:pointcut> ```元素所定义的切点可以被同一个``` java <aop:aspect> ```元素之内的所有通知元素引用。如果想让定义的
-切点能够在多个切面使用，我们可以把``` java <aop:pointcut> ```元素放在``` java <aop:config> ```元素的范围内。  
+&emsp;&emsp;正如程序清单4.10所展示的，``` <aop:pointcut> ```元素所定义的切点可以被同一个``` <aop:aspect> ```元素之内的所有通知元素引用。如果想让定义的
+切点能够在多个切面使用，我们可以把``` <aop:pointcut> ```元素放在``` <aop:config> ```元素的范围内。  
 
 #### 4.2 声明环绕通知
 
@@ -542,8 +542,8 @@ public class Audience {
 }
 ```  
 &emsp;&emsp;在观众切面中，watchPerformance()方法包含了之前四个通知方法的所有功能。不过，所有的功能都放在了这一个方法中，因此这个
-方法还要负责自身的异常处理。声明环绕通知与声明其他类型的通知并没有太大区别。我们所需要做的仅仅是使用``` java <aop:around> ```元素。  
-&emsp;&emsp;程序清单4.12　在XML中使用``` java <aop:around> ```元素声明环绕通知  
+方法还要负责自身的异常处理。声明环绕通知与声明其他类型的通知并没有太大区别。我们所需要做的仅仅是使用``` <aop:around> ```元素。  
+&emsp;&emsp;程序清单4.12　在XML中使用``` <aop:around> ```元素声明环绕通知  
 ``` xml
 
     <aop:config>
@@ -557,7 +557,7 @@ public class Audience {
         </aop:aspect>
     </aop>
 ```  
-&emsp;&emsp;像其他通知的XML元素一样，``` java <aop:around> ```指定了一个切点和一个通知方法的名字。在这里，我们使用跟之前一样的切点，但是为该
+&emsp;&emsp;像其他通知的XML元素一样，``` <aop:around> ```指定了一个切点和一个通知方法的名字。在这里，我们使用跟之前一样的切点，但是为该
 切点所设置的method属性值为watchPerformance()方法  
 
 #### 4.3 为通知传递参数
@@ -603,7 +603,7 @@ public class TrackCounter {
 那么现在让我们看一下如何使用aop命名空间声明引入切面。  
 #### 4.4 通过切面引入新的功能
 &emsp;&emsp;在前面的4.3.4小节中，我向你展现了如何借助AspectJ的@DeclareParents注解为被通知的方法神奇地引入新的方法。但是
-AOP引入并不是AspectJ特有的。使用Spring aop命名空间中的``` java <aop:declare-parents> ```，我们可以实现相同的功能。  
+AOP引入并不是AspectJ特有的。使用Spring aop命名空间中的``` <aop:declare-parents> ```，我们可以实现相同的功能。  
 &emsp;&emsp;如下的XML代码片段与之前基于AspectJ的引入功能是相同：  
 ``` xml
 
@@ -614,7 +614,7 @@ AOP引入并不是AspectJ特有的。使用Spring aop命名空间中的``` java 
                default-impl="concert.DefaultEncoreable"/>
         </aop:aspect>
 ```  
-顾名思义，``` java <aop:declare-parents> ```声明了此切面所通知的bean要在它的对象层次结构中拥有新的父类型。具体到本例中，类型匹
+顾名思义，``` <aop:declare-parents> ```声明了此切面所通知的bean要在它的对象层次结构中拥有新的父类型。具体到本例中，类型匹
 &emsp;&emsp;配Performance接口（由types-matching属性指定）的那些bean在父类结构中会增加Encoreable接口（由implement-interface属性指定）。
 最后要解决的问题是Encoreable接口中的方法实现要来自于何处。  
 &emsp;&emsp;这里有两种方式标识所引入接口的实现。在本例中，我们使用default-impl属性用全限定类名来显式指定Encoreable的实
@@ -709,12 +709,12 @@ criticismEnginebean注入到CriticAspect中：
       <property name="criticismEngine" ref="criticismEngine" />
 </bean>
 ```
-&emsp;&emsp;很大程度上，``` java<bean> ``` 的声明与我们在Spring中所看到的其他<bean>配置并没有太多的区别，但是最大的不同在于使用了factory-method属性。
+&emsp;&emsp;很大程度上，``` <bean> ``` 的声明与我们在Spring中所看到的其他<bean>配置并没有太多的区别，但是最大的不同在于使用了factory-method属性。
 通常情况下，Spring bean由Spring容器初始化，但是AspectJ切面是由AspectJ在运行期创建的。等到Spring有机会为CriticAspect
 注入CriticismEngine时，CriticAspect已经被实例化了。  
 &emsp;&emsp;因为Spring不能负责创建CriticAspect，那就不能在 Spring中简单地把CriticAspect声明为一个bean。相反，我们需要一种方式为
 Spring获得已经由AspectJ创建的CriticAspect实例的句柄，从而可以注入CriticismEngine。幸好，所有的AspectJ切面都提供了一
 个静态的aspectOf()方法，<u>该方法返回切面的一个单例</u>。所以为了获得切面的实例，我们必须使用factory-method来调
 &emsp;&emsp;用asepctOf()方法而不是调用CriticAspect的构造器方法。  
-&emsp;&emsp;简而言之，Spring不能像之前那样使用``` java <bean> ```声明来创建一个CriticAspect实例——它已经在运行时由AspectJ创建完成了。
+&emsp;&emsp;简而言之，Spring不能像之前那样使用``` <bean> ```声明来创建一个CriticAspect实例——它已经在运行时由AspectJ创建完成了。
 Spring需要通过aspectOf()工厂方法获得切面的引用，然后像<bean>元素规定的那样在该对象上执行依赖注入。
