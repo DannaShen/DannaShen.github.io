@@ -9,8 +9,8 @@ keywords: LinkedList源码
 ## 1.概述
 LinkedList是线程不安全的，允许元素为null的双向链表。其底层数据结构是链表：
 ``` java
-public class LinkedList<E> extends AbstractSequentialList<E> implements List<E>, Deque<E>, 
-                                                            Cloneable, java.io.Serializable
+    public class LinkedList<E> extends AbstractSequentialList<E> 
+           implements List<E>, Deque<E>, Cloneable, java.io.Serializable
 ```
 它实现了Deque<E>,所以它也可以作为一个双端队列。和ArrayList比，没有实现RandomAccess所以其以下标，
 随机访问元素速度较慢。因其底层数据结构是链表，所以它的增删只需要移动指针即可，故时间效率较高。
