@@ -161,165 +161,137 @@ Serializable接口：实现该序列化接口，表明该类可以被序列化�
 
     List<Integer> lists = new ArrayList<Integer>();
     lists.add(8);
-   步骤：
-   - 调用无参构造函数，this.elementData={}
-   - add(8)
-        -> ensureCapacityInternal(size+1)即ensureCapacityInternal(1)  
-            -> ensureExplicitCapacity(1)  
-                -> calculateCapacity(elementData,1)：若elementData为{}，则取10，否则返回 
-                    -> 
+步骤：
+- 调用无参构造函数ArrayList()，elementData={}。
+- add(8)里面调用ensureCapacityInternal(size+1)，size为elementData实际的元素个数，
+&ensp;即ensureCapacityInternal(1)，然后在elementData[size++] = e，这里e就是8。
+- ensureCapacityInternal方法里面调用  
+            * ensureExplicitCapacity(calculateCapacity(elementData, minCapacity))
+- calculateCapacity(elementData,minCapacity)计算最小容量，里面判断elementData是否为{},如果是，
+&ensp;返回minCapacity和DEFAULT_CAPACITY的最大值，否则返回minCapacity，这里返回DEFAULT_CAPACITY,即8
+- ensureExplicitCapacity判断calculateCapacity计算出来的最小容量(1)是否大于elementData数组的长度(0)，
+&ensp;如果大于，调用grow(minCapacity)扩展最小容量,否则什么也不做，
+&ensp;这里调用grow(minCapacity)，这里的minCapacity为1。
+- grow(minCapacity),旧容量为elementData的长度，将新容量赋值为旧容量的1.5倍，判断新容量是否小于最小容量，
+&ensp;如果小于，将最小容量赋值给新容量；接着判断新容量是否是否大于容量的最大值，如果大于，则调用
+&ensp;hugeCapacity(minCapacity)，之后调用Arrays.copyOf(elementData, newCapacity)复制，
+第二个自变量指定要建立的新数组长度，如果新数组的长度超过原数组的长度，则保留数组默认值。
+- hugeCapacity方法就是把Int的最大值给minCapacity。因为新容量已经超过最大值了，所以这时就把所需要的最小容量
+&ensp;返回，赋给新容量，当然，如果此时新容量还是不够，只能溢出了。
+<br/>
+<br/>
+<br/>
+<br/>
+(2)
 
-查找index处的node结点  
+
+    List<Integer> lists = new ArrayList<Integer>(6);
+    lists.add(8);
+步骤：
+- 调用ArrayList(int initialCapacity)构造函数。
+- 若initialCapacity为0，则elementData={},否则elementData=new Object[initialCapacity]，
+&ensp;这里initialCapacity为6。
+- add(8)里面调用ensureCapacityInternal(size+1)，size为elementData实际的元素个数，
+&ensp;即ensureCapacityInternal(1)，然后在elementData[size++] = e，这里e就是8。
+- ensureCapacityInternal(minCapacity)里面调用  
+              * ensureExplicitCapacity(calculateCapacity(elementData, minCapacity))
+- calculateCapacity(elementData,minCapacity)计算最小容量，里面判断elementData是否为{},如果是，
+&ensp;返回minCapacity和DEFAULT_CAPACITY的最大值，否则返回minCapacity，这里返回1
+- ensureExplicitCapacity判断calculateCapacity计算出来的最小容量(1)是否大于elementData数组的长度(6)，
+&ensp;如果大于，调用grow(minCapacity(7))扩展最小容量,否则什么也不做，这里什么都不做。
+
+
+#### remove
+
+在指定位置删除元素：  
 ``` java
-    //根据index处于前半段还是后半段 进行一个折半，以提升查询效率
-    //如size=8，index=3，当i=index-1时，x取next，便是index处的值
-    Node<E> node(int index) {
-        // assert isElementIndex(index);
+public E remove(int index) {
+    rangeCheck(index);//检查index的合理性
 
-        if (index < (size >> 1)) {
-            Node<E> x = first;
-            for (int i = 0; i < index; i++)
-                x = x.next;
-            return x;
-        } else {
-            Node<E> x = last;
-            for (int i = size - 1; i > index; i--)
-                x = x.prev;
-            return x;
-        }
+    modCount++;//这个作用很多，比如用来检测快速失败的一种标志。
+    E oldValue = elementData(index);//通过索引直接找到该元素
+
+    int numMoved = size - index - 1;//计算要移动的位数。
+    if (numMoved > 0)
+    System.arraycopy(elementData, index+1, elementData, index,numMoved);
+    //将--size上的位置赋值为null，让gc(垃圾回收机制)更快的回收它。
+    elementData[--size] = null; // clear to let GC do its work
+    //返回删除的元素。
+    return oldValue;
     }
 ```
 
-总结：  
-- 链表批量增加，是靠for循环遍历原数组，依次执行插入节点操作。对比ArrayList是通过
-System.arraycopy完成批量增加的。
-- 通过下标获取某个node 的时候，会根据index处于前半段还是后半段进行一个折半，以提升查询效率。
-
-#### 插入单个节点 add
-在尾部插入一个节点  
+删除某个元素：  
 ``` java
-    public boolean add(E e) {
-        linkLast(e);
-        return true;
-    }
-    // 生成新节点并插入到链表尾部，更新last/first节点   
-    void linkLast(E e) {
-        final Node<E> l = last;//记录原尾部节点
-        final Node<E> newNode = new Node<>(l, e, null);//以原尾部节点为前置节点生成新节点
-        last = newNode;//新节点设置为尾部节点
-        if (l == null)//原尾部节点为空，则链表为空，则设置新节点为首节点
-            first = newNode;
-        else//否则原尾部节点的后置为新节点
-            l.next = newNode;
-        size++;//数量加1
-        modCount++;
-    }
-```
-在index处插入一个节点
-``` java
-   public void add(int index, E element) {
-       checkPositionIndex(index);//检查下标是否越界[0,size]
-
-       if (index == size)//在尾节点后插入
-           linkLast(element);
-       else              //在中间插入
-           linkBefore(element, node(index));//在index处之前插入
-   } 
-   //在succ节点前，插入一个新节点e
-   void linkBefore(E e, Node<E> succ) {
-       // assert succ != null;
-       final Node<E> pred = succ.prev;//获取succ的前置节点
-       //以前置和后置及当前e节点创建一个新节点
-       final Node<E> newNode = new Node<>(pred, e, succ);
-       //后置节点的前置设置为新节点
-       succ.prev = newNode;
-       if (pred == null)//前置节点为空，则为空表，将新结点设置为首节点
-           first = newNode;
-       else//否则前置节点的后置设置为新节点
-           pred.next = newNode;
-       size++;
-       modCount++;
-   }
-```
-#### 删除 remove
-删除index处节点
-``` java
-    public E remove(int index) {
-        checkElementIndex(index);//检查是否越界 下标[0,size)
-        return unlink(node(index));//从链表上删除某节点
-    }
-```
-从链表上删除x节点
-``` java
-    E unlink(Node<E> x) {
-        // assert x != null;
-        final E element = x.item;//当前节点的元素值
-        final Node<E> next = x.next;//当前节点的后置节点
-        final Node<E> prev = x.prev;//当前节点的前置节点
-
-        if (prev == null) {//前置节点为空，即链表为空，则当前节点的后置节点为首节点
-            first = next;
-        } else {//否则前置节点的后置指向后置节点
-            prev.next = next;
-            x.prev = null;//x的前置 置为空
-        }
-
-        if (next == null) {//后置节点为空，即当前节点为尾节点，把前置节点置为尾节点
-            last = prev;
-        } else {//否则后置节点的前置指向前置节点
-            next.prev = prev;
-            x.next = null;//x的后置 置为空
-        }
-
-        x.item = null;//x的元素值置空
-        size--;
-        modCount++;
-        return element;
-    }
-```
-删除链表中指定节点：
-``` java
-    //因为要考虑 null元素，也是分情况遍历
-    public boolean remove(Object o) {
-        if (o == null) {//如果要删除的是null节点(从remove和add 里 可以看出，允许元素为null)
-            for (Node<E> x = first; x != null; x = x.next) {
-                if (x.item == null) {
-                    unlink(x);
+     public boolean remove(Object o) {
+        if (o == null) {//这里可以看出，ArrayList可以存放null值
+            for (int index = 0; index < size; index++)
+                if (elementData[index] == null) {
+                    fastRemove(index);
                     return true;
                 }
-            }
         } else {
-            for (Node<E> x = first; x != null; x = x.next) {
-                if (o.equals(x.item)) {
-                    unlink(x);
+            for (int index = 0; index < size; index++)
+                if (o.equals(elementData[index])) {
+                    fastRemove(index);
                     return true;
                 }
-            }
         }
         return false;
     }
 ```
-
-#### toArray
+批量删除/判断两个集合是否有交集
 ``` java
-    public Object[] toArray() {
-        //new 一个新数组 然后遍历链表，将每个元素存在数组里，返回
-        Object[] result = new Object[size];
-        int i = 0;
-        for (Node<E> x = first; x != null; x = x.next)
-            result[i++] = x.item;
-        return result;
-    }
-```
-## 4.总结
+private boolean batchRemove(Collection<?> c, boolean complement) {
+    final Object[] elementData = this.elementData;//将原集合，记名为A
+    int r = 0, w = 0;//r用来控制循环，w：标记两个集合公共元素的个数
+    //设置标志位
+    boolean modified = false;
+    try {
+        for (; r < size; r++)//遍历集合A
+            //判断集合B中是否包含集合A中的当前元素
+            if (c.contains(elementData[r]) == complement)
+                //如果包含则直接保存到集合A(w是从0位置开始的)。
+                elementData[w++] = elementData[r];
+    } finally {
+        // Preserve behavioral compatibility with AbstractCollection,
+        // even if c.contains() throws.
+        //如果contains方法使用过程报异常
+        if (r != size) {
+            //复制剩余的元素
+            System.arraycopy(elementData, r,
+                             elementData, w,
+                             size - r);
+            //w为当前集合A的length(前面try已经复制了w个了，后面size-r个还没对比就发生了异常)
+            w += size - r;
 
-LinkedList 是双向列表。  
-- 链表批量增加，是靠for循环遍历原数组，依次执行插入节点操作。对比ArrayList是通过
-System.arraycopy完成批量增加的。增加一定会修改modCount。  
-- 通过下标获取某个node 的时候，会根据index处于前半段还是后半段 进行一个折半，以提升查询效率  
-- 删也一定会修改modCount。 按下标删，也是先根据index找到Node，然后去链表上unlink掉这个Node。 
-按元素删，会先去遍历链表寻找是否有该Node，如果有，去链表上unlink掉这个Node。  
-- 改也是先根据index找到Node，然后替换值。改不修改modCount。  
-- 查本身就是根据index找到Node。  
-- 所以它的CRUD操作里，都涉及到根据index去找到Node的操作。
+        }
+        //如果集合A的大小放发生改变
+        if (w != size) {
+            // clear to let GC do its work
+            //这里有两个用途，在removeAll()时，w一直为0，就直接跟clear一样，全是为null。
+            //retainAll()：没有一个交集返回true，有交集但不全交也返回true，而两个集合相等的时候，返回false，
+            // 所以不能根据返回值来确认两个集合是否有交集，而是通过原集合的大小是否发生改变来判断，
+            // 如果原集合中还有元素即w!=size，则代表有交集，而原集合没有元素了即w==size，说明两个集合没有交集。
+            for (int i = w; i < size; i++)
+                elementData[i] = null;
+            modCount += size - w;//上一行size-w个置空了
+            size = w;//当前size就是w个
+            modified = true;
+        }
+    }
+    return modified;
+}
+```
+
+## 6.总结
+- arrayList可以存放null。
+- arrayList本质上就是一个elementData数组。
+- arrayList区别于数组的地方在于能够自动扩展大小，其中关键的方法就是gorw()方法。
+- arrayList中removeAll(collection c)和clear()的区别就是removeAll可以删除批量指定的元素，而clear是全是删除集合中的元素。
+- arrayList由于本质是数组，所以它在数据的查询方面会很快，而在插入删除这些方面，性能下降很多，有移动很多数据才能达到应有的效果
+- arrayList实现了RandomAccess，所以在遍历它的时候推荐使用for循环。
+
+
+
 
