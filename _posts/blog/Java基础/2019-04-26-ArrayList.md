@@ -21,19 +21,19 @@ ensureCapacity一次性增加capacity，可减少重分配的次数以提高性�
    public class ArrayList<E> extends AbstractList<E>
            implements List<E>, RandomAccess, Cloneable, java.io.Serializable
 ```
-(1)为什么要先继承AbstractList，而又实现List接口呢？而不是让ArrayList直接实现List<E>？  
+(1)为什么要先继承AbstractList，而又实现List接口呢？而不是让ArrayList直接实现List<E>？    
 这里是有一个思想，接口中全都是抽象的方法，而抽象类中可以有抽象方法，还可以有具体的实现方法，
 正是利用了这一点，让AbstractList是实现接口中一些通用的方法，而具体的类，
 如ArrayList就继承这个AbstractList类，拿到一些通用的方法，然后自己在实现一些自己特有的方法，
-这样一来，让代码更简洁，把继承结构最底层的类中通用的方法都抽取出来先一起实现了，减少重复代码。  
-(2)为什么ArrayList还要实现?猜测应该是没有什么用。  
+这样一来，让代码更简洁，把继承结构最底层的类中通用的方法都抽取出来先一起实现了，减少重复代码。    
+(2)为什么ArrayList还要实现?猜测应该是没有什么用。    
 (3)RandomAccess接口：这个是一个标记性接口，它的作用就是用来快速随机存取，有关效率的问题，
 在实现了该接口的话，那么使用普通的for循环来遍历，性能更高，例如arrayList。而没有实现该接口的话，
-使用Iterator来迭代，这样性能更高，例如linkedList。
-所以这个标记性只是为了让我们知道我们用什么样的方式去获取数据性能更好。  
-Cloneable接口：实现了该接口，就可以使用Object.Clone()方法了。  
-Serializable接口：实现该序列化接口，表明该类可以被序列化，什么是序列化？
-简单的说，就是能够从类变成字节流传输，然后还能从字节流变成原来的类。  
+使用Iterator来迭代，这样性能更高，例如linkedList。  
+所以这个标记性只是为了让我们知道我们用什么样的方式去获取数据性能更好。    
+Cloneable接口：实现了该接口，就可以使用Object.Clone()方法了。      
+Serializable接口：实现该序列化接口，表明该类可以被序列化，什么是序列化？  
+简单的说，就是能够从类变成字节流传输，然后还能从字节流变成原来的类。    
 
 ## 3.内部属性
 ``` java
@@ -54,7 +54,7 @@ Serializable接口：实现该序列化接口，表明该类可以被序列化�
 ## 4.构造方法
 
 ``` java
-　　 public ArrayList() {　　
+    public ArrayList() {
         super();        //调用父类中的无参构造方法，父类中的是个空的构造方法
         this.elementData = EMPTY_ELEMENTDATA;//将elementData初始化为空数组
     }
@@ -76,7 +76,7 @@ Serializable接口：实现该序列化接口，表明该类可以被序列化�
         //那么久需要使用ArrayList中的方法去改造一下。
         if (elementData.getClass() != Object[].class) 
             elementData = Arrays.copyOf(elementData, size, Object[].class);
-    }　　
+    }
 ```
 ## 5.常用方法
 
@@ -105,7 +105,7 @@ Serializable接口：实现该序列化接口，表明该类可以被序列化�
     //minCapacity(代表最小的数据容量)如果大于了实际elementData的长度(数组new出来的大小)，
     //那么就说明elementData数组的长度不够用，不够用那么就要增加elementData的length。
     //minCapacity到底是什么呢？
-    /*第一种情况：由于elementData初始化时是空的数组，那么第一次add的时候，minCapacity=size+1；
+    //第一种情况：由于elementData初始化时是空的数组，那么第一次add的时候，minCapacity=size+1；
     //也就minCapacity=1，调用上面的方法将minCapacity=10，还没有改变elementData的大小。
     //第二种情况：elementData不是空的数组了，那么在add的时候，minCapacity=size+1；
     //也就是minCapacity代表着elementData中增加之后的实际数据个数，拿着它判断elementData的
@@ -158,9 +158,11 @@ Serializable接口：实现该序列化接口，表明该类可以被序列化�
 ```
 例子说明：    
 (1)
-
+``` java
     List<Integer> lists = new ArrayList<Integer>();
     lists.add(8);
+```    
+    
 步骤：
 - 调用无参构造函数ArrayList()，elementData={}。
 - add(8)里面调用ensureCapacityInternal(size+1)，size为elementData实际的元素个数，
@@ -184,11 +186,13 @@ Serializable接口：实现该序列化接口，表明该类可以被序列化�
 <br/>
 (2)
 
-
+``` java
     List<Integer> lists = new ArrayList<Integer>(6);
     lists.add(8);
+```
+
 步骤：
-- 调用ArrayList(int initialCapacity)构造函数。
+- 调用ArrayList(int initialCapacity)构造函数。 
 - 若initialCapacity为0，则elementData={},否则elementData=new Object[initialCapacity]，
 &ensp;这里initialCapacity为6。
 - add(8)里面调用ensureCapacityInternal(size+1)，size为elementData实际的元素个数，

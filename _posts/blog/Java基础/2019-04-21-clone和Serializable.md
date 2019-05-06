@@ -10,10 +10,10 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
 ## 一、序列化和反序列化
 
 ### 1.概念和用途
-（1）概念
-序列化：把对象转换为字节序列的过程  
-反序列化：把字节序列恢复为对象的过程
-（2）对象序列化的用途
+（1）概念  
+序列化：把对象转换为字节序列的过程    
+反序列化：把字节序列恢复为对象的过程  
+（2）对象序列化的用途  
 - 把对象的字节序列永久的保存到硬盘上，通常放到一个文件。
 比如：最常见的是Web服务器中的Session对象，当有10万用户并发访问，就有可能出现10万个Session对象，内存可能吃不消，
 于是Web容器就会把一些seesion先序列化到硬盘中，等要用了，再把保存在硬盘中的对象还原到内存中。  
@@ -108,10 +108,9 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
     System.out.println(otherteacher);
 ```
 输出结果：
-``` java
+
     blog.Teacher@355da254
     blog.Teacher@355da254
-```
 
 图解：
 ![](/images/posts/Java基础/引用拷贝.png) 
@@ -125,19 +124,19 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
     System.out.println(otherteacher);
 ```
 输出结果：
-``` java
-    blog.Teacher@355da254该接口是空的，
+
+    blog.Teacher@355da254//该接口是空的，
     blog.Teacher@4dc63996
-```
+    
 图解：
 ![](/images/posts/Java基础/对象拷贝.png) 
 **注：深拷贝和浅拷贝都是对象拷贝**  
 （3）拷贝实现
 让实体类实现cloneable接口，并重写clone方法。  
-clone方法是定义在object中，并且是projected(同package下的其他类中访问;子类可以访问)修饰。  
+- clone方法是定义在object中，并且是projected(同package下的其他类中访问;子类可以访问)修饰。    
 但是cloneable接口是空的，那为什么还要实现该接口呢？因为该接口是一个标记接口，只有实现这个接口后，然后在类中重写Object中的clone方法，
 然后通过类调用clone方法才能克隆成功，只有如果不实现该接口，会报错CloneNotSupportedException。  
-但是如何判断类是否实现了cloneable接口了呢？原因在于这个方法中有一个native关键字，native修饰的方法都是空的方法，但是这些方法都是有实现体的
+- 但是如何判断类是否实现了cloneable接口了呢？原因在于这个方法中有一个native关键字，native修饰的方法都是空的方法，但是这些方法都是有实现体的
 （这里也就间接说明了native关键字不能与abstract同时使用），只不过native方法调用的实现体，都是非java代码编写的（例如：调用的是在jvm中编写的C的接口），
 每一个native方法在jvm中都有一个同名的实现体，native方法在逻辑上的判断都是由实现体实现的，另外这种native修饰的方法对返回类型，异常控制等都没有约束。 
 
@@ -239,7 +238,7 @@ clone方法是定义在object中，并且是projected(同package下的其他类�
     }
 ```
 输出结果为：  
-``` java
+
     拷贝后
     Dream
     18
@@ -248,7 +247,7 @@ clone方法是定义在object中，并且是projected(同package下的其他类�
     修改老师的信息后-------------
     Jam
     Jam
-```
+    
 （3）图解  
 ![](/images/posts/Java基础/浅拷贝.png) 
 
