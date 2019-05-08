@@ -114,7 +114,7 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
     blog.Teacher@355da254
 
 图解：
-![](/images/posts/Java基础/引用拷贝.png) 
+![](/images/posts/Java基础/拷贝-引用拷贝.png) 
 （2）对象拷贝  
 
 代码：
@@ -130,7 +130,7 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
     blog.Teacher@4dc63996
     
 图解：
-![](/images/posts/Java基础/对象拷贝.png) 
+![](/images/posts/Java基础/拷贝-对象拷贝.png) 
 **注：深拷贝和浅拷贝都是对象拷贝**  
 （3）拷贝实现
 让实体类实现cloneable接口，并重写clone方法。  
@@ -250,7 +250,7 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
     Jam
     
 （3）图解  
-![](/images/posts/Java基础/浅拷贝.png) 
+![](/images/posts/Java基础/拷贝-浅拷贝.png) 
 
 ### 3.深拷贝
 （1）定义：  
@@ -358,7 +358,7 @@ keywords: 序列化、反序列化、serialVersionUID、Externalizable、浅拷�
 
 ```
 （3）图解：  
-![](/images/posts/Java基础/深拷贝.png) 
+![](/images/posts/Java基础/拷贝-深拷贝.png) 
 
 
 
