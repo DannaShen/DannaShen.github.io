@@ -181,7 +181,7 @@ private void doAcquireSharedInterruptibly(int arg) throws InterruptedException {
 ```
 在前面我们介绍共享锁的获取时，已经分析过了doAcquireShared方法，只是它是不抛出InterruptedException的，
 doAcquireSharedInterruptibly(arg)是它的可中断版本，我们可以直接对比一下：  
-![](/images/posts/多线程/锁/)  
+![](/images/posts/多线程/源码系列/AQS源码-CountDownLatch-doAcquireShared和doAcquireSharedInterruptibly区别.png)  
 可见，它们仅仅是在对待中断的处理方式上有所不同，其他部分都是一样的。
 #### 3.3 await(long timeout, TimeUnit unit)
 相较于await()方法，await(long timeout, TimeUnit unit)提供了超时等待机制：  
@@ -243,7 +243,7 @@ private boolean doAcquireSharedNanos(int arg, long nanosTimeout) throws Interrup
 doAcquireSharedNanos的这个返回值有助于我们理解该方法究竟是因为获取到了锁而返回，还是因为超时时间到了而返回。  
 <br/>
 至于doAcquireSharedNanos的实现细节，由于他和doAcquireSharedInterruptibly相比只是多了一个超时机制：  
-![](/images/posts/多线程/锁/)  
+![](/images/posts/多线程/源码系列/AQS源码-CountDownLatch-doAcquireSharedNanos和doAcquireSharedInterruptibly区别.png)  
 ## 4. 实战
 
 

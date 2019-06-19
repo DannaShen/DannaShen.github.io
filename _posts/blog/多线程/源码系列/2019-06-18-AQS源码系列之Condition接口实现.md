@@ -36,13 +36,13 @@ await方法和signal方法以此类推。
 ## 2. 同步队列 vs 条件队列
 #### 2.1 sync queue
 同步队列如下图：  
-![](/images/posts/多线程/源码系列/)  
+![](/images/posts/多线程/源码系列/AQS源码-Condition-同步队列.png)  
 sync queue是一个双向链表，我们使用prev、next属性来串联节点。但是在这个同步队列中，我们一直没有用到nextWaiter属性，
 即使是在共享锁模式下，这一属性也只作为一个标记，指向了一个空节点，因此，在sync queue中，我们不会用它来串联节点。  
 #### 2.2 condition queue
 每创建一个Condition对象就会对应一个Condition队列，每一个调用了Condition对象的await方法的线程都会被包装成Node扔进一个条件队列中，
 就像这样：
-![](/images/posts/多线程/源码系列/)  
+![](/images/posts/多线程/源码系列/AQS源码-Condition-条件队列.png)  
 可见，每一个Condition对象对应一个Condition队列，每个Condition队列都是独立的，互相不影响的。在上图中，
 如果我们对当前线程调用了notFull.await(), 则当前线程就会被包装成Node加到notFull队列的末尾。  
 <br/>
@@ -865,7 +865,7 @@ public final void await() throws InterruptedException {
 - 线程在抢到锁后进行善后工作（离开condition queue, 处理中断异常）  
 - 线程已经持有了锁，从await()方法返回  
 
-![](/images/posts/多线程/源码系列/)  
+![](/images/posts/多线程/源码系列/AQS源码-Condition-await()总结.png)  
 在这一过程中我们尤其要关注中断，如前面所说，中断和signal所起到的作用都是将线程从condition queue中移除，
 加入到sync queue中去争锁，所不同的是，signal方法被认为是正常唤醒线程，中断方法被认为是非正常唤醒线程，
 如果中断发生在signal之前，则我们在最终返回时，应当抛出InterruptedException；
