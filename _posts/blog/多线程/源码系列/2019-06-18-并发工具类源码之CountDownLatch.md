@@ -10,6 +10,10 @@ keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 所以CountDownLatch的用法通常是设定一个大于0的值，该值即代表需要等待的总任务数，每完成一个任务后，将总任务数减一，直到最后该值为0，
 说明所有等待的任务都执行完了，“门闩”此时就被打开，后面的任务可以继续执行。CountDownLatch本身是基于共享锁实现的。  
 
+>CountDownLatch类是一个同步倒数计数器,构造时传入int参数,该参数就是计数器的初始值，每调用一次countDown()方法，计数器减1,
+计数器大于0 时，await()方法会阻塞后面程序执行，直到计数器为0，await(long timeout, TimeUnit unit)，是等待一定时间，然后执行，
+不管计数器是否到0了。
+
 ## 1. 核心属性
 CountDownLatch主要是通过AQS的共享锁机制实现的，因此它的核心属性只有一个sync，它继承自AQS，
 同时覆写了tryAcquireShared和tryReleaseShared，以完成具体的实现共享锁的获取与释放的逻辑。  
