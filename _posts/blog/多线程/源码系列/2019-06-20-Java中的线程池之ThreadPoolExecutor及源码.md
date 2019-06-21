@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Java中的线程池-ThreadPoolExecutor及源码
+title: Java中的线程池之ThreadPoolExecutor及源码
 categories: 多线程
 description: 类加载器相关信息、双亲委派模型及如何破坏
 keywords: 类加载器、双亲委派模型、破坏双亲委派模型
