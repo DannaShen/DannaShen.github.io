@@ -5,9 +5,6 @@ categories: 多线程
 description: 类加载器相关信息、双亲委派模型及如何破坏
 keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 ---
-在并发编程中，有时候需要使用线程安全的队列。如果要实现一个线程安全的队列有两种方式：一种是使用阻塞算法，另一种是使用非阻塞算法。
-使用阻塞算法的队列可以用一个锁（入队和出队用同一把锁）或两个锁（入队和出队用不同的锁）等方式来实现。
-非阻塞的实现方式则可以使用循环CAS的方式来实现。  
 ## 1. ConcurrentLinkedQueue的结构
 ConcurrentLinkedQueue是一个基于链接节点的无界线程安全队列，它采用先进先出的规则对节点进行排序，当我们添加一个元素的时候，
 它会添加到队列的尾部；当我们获取一个元素时，它会返回队列头部的元素。它采用了“wait-free”算法（即CAS算法）来实现，
@@ -30,120 +27,199 @@ ConcurrentLinkedQueue 的非阻塞算法实现主要可概括为下面几点：
 
 ConcurrentLinkedQueue由head节点和tail节点组成，每个节点（Node）由节点元素（item）和指向下一个节点的引用(next)组成，
 节点与节点之间就是通过这个next关联起来，从而组成一张链表结构的队列。默认情况下head节点存储的元素为空，tail节点等于head节点。  
+## 2. 源码分析
+#### 2.1 前提
+1. 基本原则不变性  
 
-## 2. 入队列
-#### 2.1 入队列的过程
-入队列就是将入队节点添加到队列的尾部。为了方便理解入队时队列的变化，以及head节点和tail节点的变化，这里以一个示例来展开介绍。
-假设我们想在一个队列中依次插入4个节点，如图所示  
-![](/images/posts/多线程/)  
+- 整个队列中一定会存在一个 node(该node.next = null), 并且仅存在一个, 但tail引用不一定指向它  
+- 队列中所有 item != null 的节点, head一定能够到达; cas 设置 node.item = null, 意味着这个节点被删除  
 
-过程如下。  
+2. head引用  
+不变性  
 
-- 添加元素1。队列更新head节点的next节点为元素1节点。又因为tail节点默认情况下等于head节点，所以它们的next节点都指向元素1节点。  
-- 添加元素2。队列首先设置元素1节点的next节点为元素2节点，然后更新tail节点指向元素2节点。  
-- 添加元素3，设置tail节点的next节点为元素3节点。  
-- 添加元素4，设置元素3的next节点为元素4节点，然后将tail节点指向元素4节点。  
-
-入队主要做两件事情，第一是将入队节点设置成当前队列尾节点的下一个节点。第二是更新tail节点，在入队列前如果tail节点的next节点不为空，
-则将入队节点设置成tail节点，如果tail节点的next节点为空，则将入队节点设置成tail的next节点，所以tail节点不总是尾节点。  
+- 所有的有效节点通过 succ() 方法都可达  
+- head != null  
+- (tmp = head).next != tmp || tmp != head (其实就是 head.next != head)  
+ 
 <br/>
-上面的分析从单线程入队的角度来理解入队过程，但是多个线程同时进行入队情况就变得更加复杂，因为可能会出现其他线程插队的情况。
-如果有一个线程正在入队，那么它必须先获取尾节点，然后设置尾节点的下一个节点为入队节点，但这时可能有另外一个线程插队了，
-那么队列的尾节点就会发生变化，这时当前线程要暂停入队操作，然后重新获取尾节点。让我们再通过源码来详细分析下它是如何使用CAS方式来入队的  
+
+可变性  
+
+- head.item 可能是 null, 也可能不是 null  
+- 允许 tail 滞后于 head, 也就是调用 succ() 方法, 从 head 不可达tail  
+
+3. tail 引用  
+不变性  
+
+- tail 节点通过succ()方法一定到达队列中的最后一个节点(node.next = null)
+- tail != null
+ 
+可变性  
+
+- tail.item 可能是 null, 也可能不是 null  
+- 允许 tail 滞后于 head, 也就是调用 succ() 方法, 从 head 不可达tail  
+- tail.next 可能指向 tail  
+
+4. ConcurrentLinkedQueue异于一般queue的特点:  
+
+- head 与 tail 都有可能指向一个 (item = null) 的节点  
+- 如果 queue 是空的, 则所有 node.item = null  
+- queue刚刚创建时 head = tail = dummyNode  
+- head/tail 的 item/next 的操作都是通过 CAS  
+
+#### 2.2 内部节点 Node
 ``` java
- public boolean offer(E e) {
-        checkNotNull(e);
-        //创建入队节点
-        final Node<E> newNode = new Node<E>(e);
-        //t为tail节点，p为尾节点，默认相等，采用失败即重试的方式，直到入队成功
-        for (Node<E> t = tail, p = t;;) {
-            //获得p的下一个节点
-            Node<E> q = p.next;
-            // 如果下一个节点是null,也就是p节点就是尾节点
-            if (q == null) {
-              //将入队节点newNode设置为当前队列尾节点p的next节点
-                if (p.casNext(null, newNode)) { 
-                   //判断tail节点是不是尾节点，也可以理解为如果插入结点后tail节点和p节点距离达到两个结点
-                    if (p != t) 
-                     //如果tail不是尾节点则将入队节点设置为tail。
-                     // 如果失败了，那么说明有其他线程已经把tail移动过 
-                        casTail(t, newNode);  
-                    return true;
-                }
-            }
-            // 如果p节点等于p的next节点，则说明p节点和q节点都为空，表示队列刚初始化，所以返回head节点
-            else if (p == q)
-                p = (t != (t = tail)) ? t : head;
-            else
-                //p有next节点，表示p的next节点是尾节点，则需要重新更新p后将它指向next节点
-                p = (p != t && t != (t = tail)) ? t : q;
+public class Node<E> {
+    volatile E item;
+    volatile Node<E> next;
+
+    Node(E item){
+        
+        //将 Node 对象的指定 itemOffset 偏移量设置 一个引用值
+        unsafe.putObject(this, itemOffset, item);
+    }
+
+    boolean casItem(E cmp, E val){
+        
+        //原子性的更新 item 值
+        return unsafe.compareAndSwapObject(this, itemOffset, cmp, val);
+    }
+
+    void lazySetNext(Node<E> val){
+        
+        //调用这个方法和putObject差不多, 只是这个方法设置后对应的值的可见性不一定得到保证,
+        //这个方法能起这个作用, 通常是作用在 volatile field上, 也就是,下面中的参数 val 是被volatile修饰
+        unsafe.putOrderedObject(this, nextOffset, val);
+    }
+
+    //原子性的更新 nextOffset 上的值
+    boolean casNext(Node<E> cmp, Node<E> val){
+        return unsafe.compareAndSwapObject(this, nextOffset, cmp, val);
+    }
+
+    private static Unsafe unsafe;
+    private static long itemOffset;
+    private static long nextOffset;
+
+    static {
+        try {
+            unsafe = UnSafeClass.getInstance();
+            Class<?> k = Node.class;
+            itemOffset = unsafe.objectFieldOffset(k.getDeclaredField("item"));
+            nextOffset = unsafe.objectFieldOffset(k.getDeclaredField("next"));
+        }catch (Exception e){
+
         }
     }
-```
-从源代码我们看出入队过程中主要做了三件事情，第一是定位出尾节点；第二个是使用CAS指令将入队节点设置成尾节点的next节点，
-如果不成功则重试；第三是重新定位tail节点。  
-#### 2.2 定位尾节点
-tail节点并不总是尾节点，所以每次入队都必须先通过tail节点来找到尾节点。尾节点可能是tail节点，也可能是tail节点的next节点。
-代码中循环体中第一个if判断就来判定p有没有next节点，如果没有，则p是尾节点，则将入队节点设置为p的next节点，
-同时如果tail节点不是之前尾节点p，则将入队节点设置为tail节点。如果p有next节点，则p的next节点是尾节点，需要重新更新p后，将它指向next节点。
-还有一种情况p等于p的next节点，说明p节点和p的next节点都为空，表示这个队列刚初始化，正准备添加数据，所以需要返回head节点。
-## 3. 出队列
-出队列的就是从队列里返回一个节点元素，并清空该节点对元素的引用。让我们通过每个节点出队的快照来观察下head节点的变化。  
-![](/images/posts/多线程/)  
-从上图可知，并不是每次出队时都更新head节点，当head节点里有元素时，直接弹出head节点里的元素，而不会更新head节点。
-只有当head节点里没有元素时，出队操作才会更新head节点。让我们再通过源码来深入分析下出队过程(JDK1.8):  
-``` java
-public E poll() {
-        // 设置起始点  
-        restartFromHead:
-        for (;;) {
-        //p表示head结点，需要出队的节点
-            for (Node<E> h = head, p = h, q;;) {
-            //获取p节点的元素
-                E item = p.item;
-                //如果p节点的元素不为空，使用CAS设置p节点引用的元素为null
-                if (item != null && p.casItem(item, null)) {
-                    
-                    if (p != h) // hop two nodes at a time
-                    //如果p节点不是head节点则更新head节点，也可以理解为删除该结点后检查head是否与
-                    //头结点相差两个结点，如果是则更新head节点
-                        updateHead(h, ((q = p.next) != null) ? q : p);
-                    return item;
-                }
-                //如果p节点的下一个节点为null，则说明这个队列为空，更新head结点
-                else if ((q = p.next) == null) {
-                    updateHead(h, p);
-                    return null;
-                }
-                //结点出队失败，重新跳到restartFromHead来进行出队
-                else if (p == q)
-                    continue restartFromHead;
-                else
-                    p = q;
-            }
-        }
-    }
-```
-更新head节点的updateHead方法：
-``` java
-final void updateHead(Node<E> h, Node<E> p) 
-{
-     // 如果两个结点不相同，尝试用CAS指令原子更新head指向新头节点
-     if (h != p && casHead(h, p))
-         //将旧的头结点指向自身以实现删除
-     h.lazySetNext(h);
 }
 ```
-首先获取head节点的元素，并判断head节点元素是否为空，如果为空，表示另外一个线程已经进行了一次出队操作将该节点的元素取走，
-如果不为空，则使用CAS的方式将head节点的引用设置成null，如果CAS成功，则直接返回head节点的元素，如果CAS不成功，
-表示另外一个线程已经进行了一次出队操作更新了head节点，导致元素发生了变化，需要重新获取head节点。如果p节点的下一个节点为null，
-则说明这个队列为空（此时队列没有元素，只有一个伪结点p），则更新head节点。
-    
+#### 2.3  内部属性、构造方法及其他辅助方法
+##### 2.3.1 内部属性和构造方法
+``` java
+//head 节点
+private transient volatile Node<E> head;
+//tail 
+private transient volatile Node<E> tail;
 
+public ConcurrentLinkedList() {
+    //默认会构造一个 dummy 节点，dummy 的存在是防止一些特殊复杂代码的出现 
+    head = tail = new Node<E>(null);
+}
+```
+#### 2.3.2 查询后继节点 succ()
+``` java
+//获取 p 的后继节点, 若 p.next = p (updateHead 操作导致的), 
+//则说明 p 已经 fall off queue, 需要 jump 到 head
+final Node<E> succ(Node<E> p){
+    Node<E> next = p.next;
+    return (p == next)? head : next;
+}
+``` 
+获取一个节点的后继节点不仅是 node.next , 还有特殊情况, 就是tail 指向一个哨兵节点 (node.next = node); 
+代码的注释中提到了 哨兵节点是 updateHead 导致的, 那我们来看 updateHead方法.  
+#### 2.3.3 特别的更新头节点方法 updateHead()
+``` java
 
+//将节点 p设置为新的节点(这是原子操作),
+//之后将原节点的next指向自己, 直接变成一个哨兵节点(为queue节点删除及garbage做准备)
+final void updateHead(Node<E> h, Node<E> p){
+    if(h != p && casHead(h, p)){
+        h.lazySetNext(h);
+    }
+}
+```
+主要这个 h.lazySetNext(h), 将 h.next -> h 直接变成一个哨兵节点, 这种lazySetNext主要用于无阻塞数据结构的nulling out。
+#### 2.4 入队操作 offer()
+``` java
+//在队列的末尾插入指定的元素
+public boolean offer(E e){
+    checkNotNull(e);
+    final Node<E> newNode = new Node<E>(e); // 1. 构建一个 node
 
-
-
+    for(Node<E> t = tail, p = t;;){         // 2. 初始化变量 p = t = tail
+        Node<E> q = p.next;                 // 3. 获取 p 的next
+        if(q == null){                      // q == null, 说明 p 是 last Node
+            if(p.casNext(null, newNode)){   // 4. 对 p 进行 cas 操作, newNode -> p.next
+                // 5. 每经过一次p =q操作(向后遍历节点，即p的next赋给p), 
+                // 则 p != t 成立, 这个也说明tail滞后于head的体现
+                // 当之前的尾节点和现在插入的节点之间有一个节点时才设置尾节点，并不是每一次都cas设置
+                if(p != t){ 
+                    casTail(t, newNode); 
+                }
+                return true;
+            }
+        }
+        // 6. (p == q) 成立,则说明p是pool()时调用 "updateHead" 导致的(删除头节点),
+        // 将head的next设置为新的head,所以这里需要重新找新的head
+        else if(p == q){  
+            /** 1. 大前提 p 是已经被删除的节点
+             *  2. 判断 tail 是否已经改变
+             *      1) tail 已经变化, 则说明 tail 已经重新定位
+             *      2) tail 未变化, 而 tail 指向的节点是要删除的节点, 所以让 p 指向 head
+             *  判断尾节点是否有变化
+             *  1. 尾节点变化, 则用新的尾节点
+             *  2. 尾节点没变化, 将 tail 指向head
+             */
+            p = (t != (t = tail))? t : head;
+        }else{
+            // 7. 寻找尾节点
+            p = (p != t && (t != (t = tail))) ? t : q;
+        }
+    }
+}
+```
+#### 2.5 出队列操作 poll()
+``` java
+public E poll(){
+    restartFromHead:
+    for(;;){        
+        for(Node<E> h = head, p = h, q;;){ // 获取头结点
+            E item = p.item;
+            if(item != null && p.casItem(item, null)){ // item不为null ，使用cas设置item为空
+                
+                if(p != h){ // 3. 若此时的 p != h, 则更新 head(什么时候p != h? -> 执行第8步后)
+                    // 4. 进行 cas 更新 head ; "(q = p.next) != null" 怕出现p此时是尾节点了; 
+                    // 在 ConcurrentLinkedQueue 中正真的尾节点只有1个(必须满足node.next = null)
+                    //不是每次都更新，头结点item为null时，下个节点就必须更新，不为null时，规则和更新尾节点一样
+                    updateHead(h, ((q = p.next) != null)? q : p); 
+                }
+                return item;
+            }
+            else if((q = p.next) == null){  // 5. 如果p节点的下一节点为null, 则表明队列为空
+                 // 6. 这一步除了更新head 外, 还是helpDelete删除队列操作 删除 p 之前的节点
+,                updateHead(h, p); 
+                return null;
+            }
+            // 7. p == q -> 说明别的线程调用了updateHead，自己的next 指向了自己，重新循环，获取最新的头结点
+            else if(p == q){ 
+                continue restartFromHead;
+            }else
+                // 如果下一个元素不为空，则将头节点的下一个节点设置成头节点
+                p = q; 
+        }
+    }
+}
+```
 
 
 
