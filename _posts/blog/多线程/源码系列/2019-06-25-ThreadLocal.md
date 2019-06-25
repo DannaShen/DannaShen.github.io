@@ -6,9 +6,6 @@ description: 类加载器相关信息、双亲委派模型及如何破坏
 keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 ---
 ## 1. 对ThreadLocal的理解
-ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。都知道ThreadLocal为变量在每个线程中都创建了一个副本，
-那么每个线程可以访问自己内部的副本变量。  
-<br/>
 例子：  
 ``` java
 class ConnectionManager {
@@ -260,102 +257,6 @@ static class ThreadLocalMap {
                 }
             }
         }
-        
-        private void replaceStaleEntry(ThreadLocal<?> key, Object value,
-                                       int staleSlot) {
-            Entry[] tab = table;
-            int len = tab.length;
-            Entry e;
-
-            int slotToExpunge = staleSlot;
-            for (int i = prevIndex(staleSlot, len);
-                 (e = tab[i]) != null;
-                 i = prevIndex(i, len))
-                if (e.get() == null)
-                    slotToExpunge = i;
-
-            for (int i = nextIndex(staleSlot, len);
-                 (e = tab[i]) != null;
-                 i = nextIndex(i, len)) {
-                ThreadLocal<?> k = e.get();
-
-                if (k == key) {
-                    e.value = value;
-
-                    tab[i] = tab[staleSlot];
-                    tab[staleSlot] = e;
-
-                    // Start expunge at preceding stale entry if it exists
-                    if (slotToExpunge == staleSlot)
-                        slotToExpunge = i;
-                    cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
-                    return;
-                }
-
-             
-                if (k == null && slotToExpunge == staleSlot)
-                    slotToExpunge = i;
-            }
-
-            tab[staleSlot].value = null;
-            tab[staleSlot] = new Entry(key, value);
-
-            if (slotToExpunge != staleSlot)
-                cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
-        }
-
-        private int expungeStaleEntry(int staleSlot) {
-            Entry[] tab = table;
-            int len = tab.length;
-
-            // expunge entry at staleSlot
-            tab[staleSlot].value = null;
-            tab[staleSlot] = null;
-            size--;
-
-            // Rehash until we encounter null
-            Entry e;
-            int i;
-            for (i = nextIndex(staleSlot, len);
-                 (e = tab[i]) != null;
-                 i = nextIndex(i, len)) {
-                ThreadLocal<?> k = e.get();
-                if (k == null) {
-                    e.value = null;
-                    tab[i] = null;
-                    size--;
-                } else {
-                    int h = k.threadLocalHashCode & (len - 1);
-                    if (h != i) {
-                        tab[i] = null;
-
-                        // Unlike Knuth 6.4 Algorithm R, we must scan until
-                        // null because multiple entries could have been stale.
-                        while (tab[h] != null)
-                            h = nextIndex(h, len);
-                        tab[h] = e;
-                    }
-                }
-            }
-            return i;
-        }
-
-      
-        private boolean cleanSomeSlots(int i, int n) {
-            boolean removed = false;
-            Entry[] tab = table;
-            int len = tab.length;
-            do {
-                i = nextIndex(i, len);
-                Entry e = tab[i];
-                if (e != null && e.get() == null) {
-                    n = len;
-                    removed = true;
-                    i = expungeStaleEntry(i);
-                }
-            } while ( (n >>>= 1) != 0);
-            return removed;
-        }
 
         private void rehash() {
             expungeStaleEntries();
@@ -395,15 +296,6 @@ static class ThreadLocalMap {
         }
 
         
-        private void expungeStaleEntries() {
-            Entry[] tab = table;
-            int len = tab.length;
-            for (int j = 0; j < len; j++) {
-                Entry e = tab[j];
-                if (e != null && e.get() == null)
-                    expungeStaleEntry(j);
-            }
-        }
     }
 ```
 
