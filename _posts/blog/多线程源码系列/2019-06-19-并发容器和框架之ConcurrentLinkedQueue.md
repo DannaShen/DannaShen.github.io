@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 并发容器和框架之ConcurrentLinkedQueue
-categories: 多线程
+categories: 多线程源码系列
 description: 类加载器相关信息、双亲委派模型及如何破坏
 keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 ---
@@ -23,7 +23,7 @@ ConcurrentLinkedQueue 的非阻塞算法实现主要可概括为下面几点：
 两个步骤分离开来，从而缩小了入队 / 出队时需要原子化更新值的范围到唯一变量。这是非阻塞算法得以实现的关键。  
 - 以批处理方式来更新head/tail，从整体上减少入队 / 出队操作的开销。  
 
-![](/images/posts/多线程/)  
+![](/images/posts/多线程/源码系列/ConcurrentLinkedQueue-类结构.png)  
 
 ConcurrentLinkedQueue由head节点和tail节点组成，每个节点（Node）由节点元素（item）和指向下一个节点的引用(next)组成，
 节点与节点之间就是通过这个next关联起来，从而组成一张链表结构的队列。默认情况下head节点存储的元素为空，tail节点等于head节点。  
