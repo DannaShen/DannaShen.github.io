@@ -12,7 +12,7 @@ keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 >所谓无无界队列就是没有容量限制，可以"无限"的扩张，当然也不是无休止的扩张，这个还是有最大的限制的。
 
 ## 1. 继承体系
-![](/images/posts/多线程/源码系列/)  
+![](/images/posts/多线程/源码系列/阻塞队列-PriorityBlockingQueue之类图.png)  
 PriorityBlockingQueue 实现了BlockingQueue接口，该接口中定义了阻塞的方法接口。  
 PriorityBlockingQueue 继承了AbstractQueue，具有了队列的行为。  
 PriorityBlockingQueue 实现了Serializable接口,可以序列化。  

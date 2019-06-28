@@ -21,7 +21,7 @@ Delayed 接口有一个getDelay 方法接口，该方法用来告知延迟到期
 <br/>
 为了排序Delayed 接口还继承了Comparable 接口，因此必须实现compareTo()，使其可以进行元素的比较。  
 ## 3. 继承体系
-![](/images/posts/多线程/源码系列/)  
+![](/images/posts/多线程/源码系列/阻塞队列-DelayQueue之类图.png)  
 和阻塞队列ArrayBlockingQueue，LinkedBlockingQueue，PriorityBlockingQueue基本是一样的，唯独没有实现序列化接口。  
 DelayQueue 实现了BlockingQueue接口，该接口中定义了阻塞的方法接口。  
 DelayQueue 继承了AbstractQueue，具有了队列的行为。  
@@ -204,6 +204,7 @@ leader是用来减少不必要的竞争,如果leader不为空说明已经有线�
 等我取了再说）  
 <br/>
 下面用流程图来展示这一过程：  
+![](/images/posts/多线程/源码系列/阻塞队列-DelayQueue之poll(long%20timeout,%20TimeUnit%20unit).png)  
 #### 7.3 take()
 获取并移除此队列的头部，在元素变得可用之前一直等待  
 ``` java
