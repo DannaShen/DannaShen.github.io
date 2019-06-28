@@ -7,32 +7,136 @@ keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 ---
 ## 1. 线程池的实现原理
 当向线程池提交一个任务之后，线程池是如何处理这个任务的呢？本节来看一下线程池的主要处理流程，处理流程图如图所示。  
-![](/images/posts/多线程/线程池/ThreadPoolExecutor-execute流程图.png)  
-从图中可以看出，当提交一个新任务到线程池时，线程池的处理流程如下。  
-1）线程池判断核心线程池里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。
-如果核心线程池里的线程都在执行任务，则进入下个流程。  
-2）线程池判断工作队列是否已经满。如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程。  
-3）线程池(maximumPoolSize中除了核心下线程的那部分见下图)判断线程池的线程是否都处于工作状态。如果没有，则创建一个新的工作线程来执行任务。否则，则交给饱和策略来处理这个任务。
-ThreadPoolExecutor执行execute()方法的示意图，如图所示。  
-![](/images/posts/多线程/线程池/ThreadPoolExecutor-execute示意图.png)  
-ThreadPoolExecutor执行execute方法分下面4种情况。  
-1）如果当前运行的线程少于corePoolSize，则创建新线程来执行任务（注意，执行这一步骤需要获取全局锁）。  
-2）如果运行的线程等于或多于corePoolSize，则将任务加入BlockingQueue。  
-3）如果无法将任务加入BlockingQueue（队列已满），则创建新的线程来处理任务（注意，执行这一步骤需要获取全局锁）。  
-4）如果创建新线程将使当前运行的线程超出maximumPoolSize，任务将被拒绝，并调用RejectedExecutionHandler.rejectedExecution()方法。  
 <br/>
+![](/images/posts/多线程/线程池/ThreadPoolExecutor-execute流程图.png)  
+<br/>
+从图中可以看出，当提交一个新任务到线程池时，线程池的处理流程如下。  
+1）如果当前运行的线程少于核心线程数，则创建一个新的工作线程来执行任务。  
+2）如果当前运行的线程等于或多于核心线程数线程池，判断工作队列是否已经满。如果工作队列没有满，则将新提交的任务存储在这个工作队列里。
+如果工作队列满了，则进入下个流程。    
+3）线程池(maximumPoolSize中除了核心下线程的那部分见下图)判断线程池的线程是否都处于工作状态。如果没有，
+则创建一个新的工作线程来执行任务。否则，则交给饱和策略来处理这个任务。  
+ThreadPoolExecutor执行execute()方法的示意图，如图所示。  
+<br/>
+![](/images/posts/多线程/线程池/ThreadPoolExecutor-execute示意图.png)  
+<br/>
+ThreadPoolExecutor执行execute方法分下面4种情况。  
+1）如果当前运行的线程少于corePoolSize，则创建新线程来执行任务（执行这一步骤需要获取全局锁）。  
+2）如果运行的线程等于或多于corePoolSize，则将任务加入BlockingQueue。  
+3）如果无法将任务加入BlockingQueue（队列已满），则创建新的线程来处理任务（执行这一步骤需要获取全局锁）。  
+4）如果创建新线程将使当前运行的线程超出maximumPoolSize，任务将被拒绝，并调用RejectedExecutionHandler.rejectedExecution()方法。  
+<br/>   
 ThreadPoolExecutor采取上述步骤的总体设计思路，是为了在执行execute()方法时，尽可能地避免获取全局锁
 （那将会是一个严重的可伸缩瓶颈）。在ThreadPoolExecutor完成预热之后（当前运行的线程数大于等于corePoolSize），
 几乎所有的execute()方法调用都是执行步骤2，而步骤2不需要获取全局锁。  
 ## 2. 源码分析
-#### 2.1 构造函数
+#### 2.1 整体结构
+##### 2.1.1 继承关系
+![](/images/posts/多线程/线程池/ThreadPoolExecutor-类图.png)  
+##### 2.1.2 Executor接口
 ``` java
-public ThreadPoolExecutor(int corePoolSize,                             //核心池大小
-                              int maximumPoolSize,                      //最大线程池大小
+public interface Executor {
+    void execute(Runnable command);
+}
+```
+##### 2.1.3 ExecutorService接口
+``` java
+public interface ExecutorService extends Executor {
+
+    void shutdown();
+
+    List<Runnable> shutdownNow();
+
+    boolean isShutdown();
+
+    boolean isTerminated();
+
+    boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException;
+
+    <T> Future<T> submit(Callable<T> task);
+
+    <T> Future<T> submit(Runnable task, T result);
+
+    Future<?> submit(Runnable task);
+
+    <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException;
+
+    <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+                                    throws InterruptedException;
+
+    
+    <T> T invokeAny(Collection<? extends Callable<T>> tasks)
+                    throws InterruptedException, ExecutionException;
+
+   
+    <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+                    throws InterruptedException, ExecutionException, TimeoutException;
+}
+```
+ExecutorService接口继承Executor接口，并增加了submit、shutdown、invokeAll等等一系列方法。
+##### 2.1.4 AbstractExecutorService抽象类
+``` java
+public abstract class AbstractExecutorService implements ExecutorService {
+
+    protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+        return new FutureTask<T>(runnable, value);
+    }
+
+    protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+        return new FutureTask<T>(callable);
+    }
+
+    public Future<?> submit(Runnable task) {
+        if (task == null) throw new NullPointerException();
+        RunnableFuture<Void> ftask = newTaskFor(task, null);
+        execute(ftask);
+        return ftask;
+    }
+
+    public <T> Future<T> submit(Runnable task, T result) {
+        if (task == null) throw new NullPointerException();
+        RunnableFuture<T> ftask = newTaskFor(task, result);
+        execute(ftask);
+        return ftask;
+    }
+
+    public <T> Future<T> submit(Callable<T> task) {
+        if (task == null) throw new NullPointerException();
+        RunnableFuture<T> ftask = newTaskFor(task);
+        execute(ftask);
+        return ftask;
+    }
+
+    private <T> T doInvokeAny(Collection<? extends Callable<T>> tasks, boolean timed, long nanos)
+                              throws InterruptedException, ExecutionException, TimeoutException {...}
+
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
+                            throws InterruptedException, ExecutionException {... }
+
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+                            throws InterruptedException, ExecutionException, TimeoutException {...}
+
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+                                         throws InterruptedException {...}
+
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
+                                         long timeout, TimeUnit unit)
+                                        throws InterruptedException {...}
+
+}
+```
+AbstractExecutorService抽象类实现ExecutorService接口，并且提供了一些方法的默认实现，例如submit方法、invokeAny方法、invokeAll方法。  
+<br/>
+像execute方法、线程池的关闭方法（shutdown、shutdownNow等等）就没有提供默认的实现。
+#### 2.2 构造函数与线程池状态
+##### 2.2.1 构造函数
+``` java
+public ThreadPoolExecutor(int corePoolSize,                             //核心线程数
+                              int maximumPoolSize,                      //最大线程数
                               long keepAliveTime,                       //线程存活时间
                               TimeUnit unit,                            //keepAliveTime的单位
                               BlockingQueue<Runnable> workQueue,        //阻塞任务队列
-                              ThreadFactory threadFactory,              //线程工厂
+                              ThreadFactory threadFactory,              //创建线程工厂
                               RejectedExecutionHandler handler)         //拒绝任务的接口处理器
      { 
         if (corePoolSize < 0 ||
@@ -53,9 +157,44 @@ public ThreadPoolExecutor(int corePoolSize,                             //核心
         this.handler = handler;
     }
 ```
-ThreadPoolExecutor继承关系
-![](/images/posts/多线程/线程池/ThreadPoolExecutor结构.png)  
+##### 2.2.2 线程池状态
+int 是4个字节，也就是32位（注：一个字节等于8位）  
+``` java
+//记录线程池状态和线程数量（总共32位，前三位表示线程池状态，后29位表示线程数量）
+private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+//线程数量统计位数29  Integer.SIZE=32 
+private static final int COUNT_BITS = Integer.SIZE - 3;
+//容量 000 11111111111111111111111111111
+private static final int CAPACITY   = (1 << COUNT_BITS) - 1;
+
+//运行中 111 00000000000000000000000000000
+private static final int RUNNING    = -1 << COUNT_BITS;
+//关闭 000 00000000000000000000000000000
+private static final int SHUTDOWN   =  0 << COUNT_BITS;
+//停止 001 00000000000000000000000000000
+private static final int STOP       =  1 << COUNT_BITS;
+//整理 010 00000000000000000000000000000
+private static final int TIDYING    =  2 << COUNT_BITS;
+//终止 011 00000000000000000000000000000
+private static final int TERMINATED =  3 << COUNT_BITS;
+
+//获取运行状态（获取前3位）
+private static int runStateOf(int c)     { return c & ~CAPACITY; }
+//获取线程个数（获取后29位）
+private static int workerCountOf(int c)  { return c & CAPACITY; }
+private static int ctlOf(int rs, int wc) { return rs | wc; }
+```
+RUNNING：接受新任务并且处理阻塞队列里的任务
+SHUTDOWN：拒绝新任务但是处理阻塞队列里的任务
+STOP：拒绝新任务并且抛弃阻塞队列里的任务同时会中断正在处理的任务
+TIDYING：所有任务都执行完（包含阻塞队列里面任务）当前线程池活动线程为0，将要调用terminated方法
+TERMINATED：终止状态。terminated方法调用完成以后的状态
+
+
+
+<br/>
 我们知道线程池的提交模式是submit方法和execute方法。下面看这些方法的实现原理和区别。  
+
 #### 2.2 execute方法
 execute方法在Executor中定义，入参为Runnable接口，没有返回值，线程池没有计算的结果返回。  
 ``` java
