@@ -1,15 +1,18 @@
 ---
 layout: post
 title: AQS源码系列之ReentrantReadWriteLock
-categories: 多线程
+categories: 多线程源码系列
 description: 类加载器相关信息、双亲委派模型及如何破坏
 keywords: 类加载器、双亲委派模型、破坏双亲委派模型
 ---
+
 >ReentrantReadWriteLock表示可重入读写锁，ReentrantReadWriteLock中包含了两种锁，读锁ReadLock和写锁WriteLock，
 可以通过这两种锁实现线程间的同步。  
 ReentrantReadWriteLock底层是基于ReentrantLock和AbstractQueuedSynchronizer来实现的，所以，
 ReentrantReadWriteLock的数据结构也依托于AQS的数据结构，下面进入源码分析。
+
 ## 1. 读写锁简介
+
 现实中有这样一种场景：对共享资源有读和写的操作，且写操作没有读操作那么频繁。在没有写操作的时候，
 多个线程同时读一个资源没有任何问题，所以应该允许多个线程同时读取共享资源；但是如果一个线程想去写这些共享资源，
 就不应该允许其他线程对该资源进行读和写的操作了。  
@@ -23,8 +26,11 @@ ReentrantReadWriteLock的数据结构也依托于AQS的数据结构，下面进�
 （3）锁降级：遵循获取写锁、获取读锁再释放写锁的次序，写锁能够降级成为读锁。  
 <br/>
 下面进入源码
+
 ## 2. ReentrantReadWriteLock 类的整体结构
+
 ``` java
+
 public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializable {
 
     /** 读锁 */
@@ -64,6 +70,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializab
 
     public static class WriteLock implements Lock, java.io.Serializable {}
 }
+
 ```
 #### 2.1 类的继承关系
 ``` java
